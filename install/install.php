@@ -30,15 +30,13 @@ if (function_exists('date_default_timezone_set')) {
 */
 $g_supported_db_types= array();
 
-if(function_exists('mysql_connect')){
-    $g_supported_db_types[]='mysql';
-}
-
 if(function_exists('mysqli_connect')){
     $g_supported_db_types[]='mysqli';
 }
 
-
+if(function_exists('mysql_connect')){
+	$g_supported_db_types[]='mysql';
+}
 
 require_once(dirname(__FILE__)."/../std/common.inc.php");
 #require_once(dirname(__FILE__)."/../std/errorhandler.inc.php");
@@ -115,7 +113,7 @@ function step_01_checkEvironment() {
         confGet('DIR_TEMP'),
         confGet('DIR_FILES'),
         confGet('DIR_IMAGE_CACHE'),
-        confGet('DIR_RSS'),    
+        confGet('DIR_RSS'),
     ) as $dir) {
         print_testStart("check write-permissions for settings directory '<b>$dir</b>'?");
         if(!is_writeable('../'. $dir)) {
@@ -156,9 +154,9 @@ function step_01_checkEvironment() {
                 print_testResult(RESULT_PROBLEM,"Renaming failed. Please remove manually.");
             }
         }
-        
+
         else print_testResult(RESULT_GOOD,"does not exists. Fresh installation");
-        
+
         global $g_form_fields;
         $g_form_fields['db_username']['value']=     confGet('DB_USERNAME') ? confGet('DB_USERNAME') : NULL;
         $g_form_fields['db_password']['value']=     confGet('DB_PASSWORD') ? confGet('DB_PASSWORD') : NULL;
@@ -256,7 +254,7 @@ function step_02_proceed()
     $f_user_admin_name =        $g_form_fields['user_admin_name']['value'];
     $f_user_admin_password =    $g_form_fields['user_admin_password']['value'];
     $f_continue_on_sql_errors = $g_form_fields['continue_on_sql_errors']['value'];
-    
+
     require_once(dirname(__FILE__)."/../db/db_".$f_db_type."_class.php");
 
     ### check mysql-connection ###
@@ -288,7 +286,7 @@ function step_02_proceed()
         print_testStart("Make sure to not overwrite existing streber-db called '$f_db_name'");
 
         ### db does NOT exists ###
-        if(!$sql_obj->selectdb()) 
+        if(!$sql_obj->selectdb())
         {
             print_testResult(RESULT_GOOD, $sql_obj->error);
 
@@ -310,14 +308,14 @@ function step_02_proceed()
         }
 
         ### db exists / upgrade ###
-        else 
+        else
         {
             print_testResult(RESULT_PROBLEM,"DB '$f_db_name' already exists");
 
             ### check version of existing database ###
             print_testStart("checking version of existing database");
-            if($sql_obj->execute("SELECT * FROM {$f_db_table_prefix}db 
-           		WHERE `updated` IS NULL ORDER BY `version` ASC")) 
+            if($sql_obj->execute("SELECT * FROM {$f_db_table_prefix}db
+           		WHERE `updated` IS NULL ORDER BY `version` ASC"))
            	{
                 $count=0;
                 $db_version=NULL;
@@ -330,7 +328,7 @@ function step_02_proceed()
                 /**
                 * there should be excactly one row with updated == NULL. Otherwise we a have a problem
                 */
-                
+
                 if($count < 1)
                 {
                 	/* Ugh oh. Lets see if we can get the row with the highest
@@ -338,35 +336,35 @@ function step_02_proceed()
                 	print_testResult(RESULT_PROBLEM, "Streber has detected a problem with db-version but is attempting to work around it.\n");
                 	if($sql_obj->execute("SELECT * FROM {$f_db_table_prefix}db ORDER BY `version` DESC LIMIT 1"))
                 	{
-                		while ($row = $sql_obj->fetchArray()) 
+                		while ($row = $sql_obj->fetchArray())
                 		{
 							$db_version= $row['version'];
 							$streber_version_required= $row['version_streber_required'];
 							$count++;
 						}
                 	}
-                	
+
                 	if($count < 1)
                 	{
 		            	print_testResult(RESULT_FAILED, "Streber is unable to detect your current installed version.<br/>\n"
 		            		. "You can work around this by manually adding this information to the db table in your Streber database.");
 		            	return false;
                 	}
-                	
+
                 	print_testResult(RESULT_PROBLEM, "Taking best guess at currently installed version.\n");
                 }
-                
-                if($count > 1) 
+
+                if($count > 1)
                 {
                 	/* Doh. It appears that our user is the victim of an installer bug
                 	 * found in older versions of Streber (we hope). */
                     print_testResult(RESULT_PROBLEM, "Streber has detected a problem with db-version but is now fixing. Upgrade history lost.");
-                    $sql_obj->execute("TRUNCATE TABLE {$f_db_table_prefix}db"); 
-					$sql_obj->execute("INSERT INTO {$f_db_table_prefix}db SET version = " 
+                    $sql_obj->execute("TRUNCATE TABLE {$f_db_table_prefix}db");
+					$sql_obj->execute("INSERT INTO {$f_db_table_prefix}db SET version = "
 						. $db_version . ", version_streber_required = " . $streber_version_required
 						. ", id = 1, updated = ");
                 }
-                
+
                 if($db_version < confGet('STREBER_VERSION')) {
 
                     ### update ###
@@ -389,7 +387,7 @@ function step_02_proceed()
                     print_testResult(RESULT_PROBLEM,"version is $db_version. It's requires Version " .confGet('STREBER_VERSION'). " of Streber. Current Version is ".confGet('STREBER_VERSION').". Please download and install the latest version.");
                     return false;
                 }
-                else 
+                else
                 {
                     $filename= '../'. confGet('DIR_SETTINGS').  confGet('FILE_DB_SETTINGS');
                     print_testStart("writing configuration file '$filename'...");
@@ -402,13 +400,13 @@ function step_02_proceed()
                         'DB_NAME'       => $f_db_name,
                         'DB_VERSION'    => confGet('STREBER_VERSION'),
                     ));
-                    
+
                     if($write_ok) {
                         print_testResult(RESULT_GOOD, "Current database (version $db_version) looks fine. Installation finished with database setting rewritten to file. Please view ".getStreberWikiLink('installation','Installation Guide')." on how to fix unsolved problems.");
                     }
                     else {
                         print_testResult(RESULT_PROBLEM, "Current database (version $db_version) looks fine. Installation finished with no change (unable to rewrite database setting to file). Please view ".getStreberWikiLink('installation','Installation Guide')." on how to fix unsolved problems.");
-                    }                
+                    }
                     return true;
                 }
                 print_testResult(RESULT_PROBLEM,"Installation aborted due to unknown reason.");
@@ -425,7 +423,7 @@ function step_02_proceed()
         /**
         * fresh installation
         */
-        
+
         ### creating database-structure ###
         print_testStart("creating table structure...");
 
@@ -445,13 +443,13 @@ function step_02_proceed()
                 print_testResult(RESULT_FAILED,"Getting sql-code failed. This is an internal error. Look at ". getStreberWikiLink('installation','Installation Guide') ." for clues. ");
                 return false;
             }
-        }    
+        }
         if(!parse_mysql_dump($filename, $f_db_table_prefix, $sql_obj)) {
             print_testResult(RESULT_FAILED,"SQL-Error[" . __LINE__ . "]:<br><pre>".$sql_obj->error."</pre>");
             return false;
         }
         print_testResult(RESULT_GOOD);
-        
+
         ### upgrade
         if($upgradeFromVersion != confGet('STREBER_VERSION')) {
             print_testStart("updating to latest version...");
@@ -471,7 +469,7 @@ function step_02_proceed()
             }
             print_testResult(RESULT_GOOD);
         }
-        
+
 
         ### create db-version entry ###
         print_testStart("add db-version entry");
@@ -485,7 +483,7 @@ function step_02_proceed()
         else {
             print_testResult(RESULT_GOOD);
         }
-        
+
         ### create admin entry entry ###
         print_testStart("add admin-user entry 1/2");
         $password_md5=md5($f_user_admin_password);
@@ -562,9 +560,9 @@ function step_02_proceed()
          * -- Cody Somerville <cody@redcow.ca> 01-MAY-08
          */
         {
-        	
+
         	/* Write general site settings */
-        	
+
         	$filename = "../" . confGet("DIR_SETTINGS") . confGet("SITE_SETTINGS");
         	print_testStart("writing configuration file '" . $filename . "'...");
         	$settings = array(
@@ -572,10 +570,10 @@ function step_02_proceed()
         		"EMAIL_ADMINISTRATOR" => $g_form_fields["site_email"]["value"],
         		'APP_TITLE_HEADER'    => $g_form_fields["site_name"]["value"] . "<span class=extend>PM</span>",
         	);
-        	
+
         	$write_ok= writeSettingsFile($filename, $settings);
 
-            if(!$write_ok) 
+            if(!$write_ok)
             {
                 print_testResult(RESULT_FAILED, "can not write '" . $filename
                 	. "'. Please create it with this content:<br><pre>&lt;?php"
@@ -583,11 +581,11 @@ function step_02_proceed()
                 return false;
             }
             else print_testResult(RESULT_GOOD);
-            
-        		
-        
+
+
+
         	/* Write database settings */
-        	
+
             $filename='../'. confGet('DIR_SETTINGS').  confGet('FILE_DB_SETTINGS');
             print_testStart("writing configuration file '$filename'...");
             $settings= array(
@@ -629,7 +627,7 @@ function step_02_proceed()
 /**
 * upgrades
 */
-function upgrade($args=NULL) 
+function upgrade($args=NULL)
 {
 	global $g_form_fields;
 
@@ -646,7 +644,7 @@ function upgrade($args=NULL)
 
     echo "<h2>Upgrading...</h2>";
     print_testStart("getting original version...");
-    
+
     ### connect db ###
     $sql_obj = new sql_class($hostname, $db_username, $db_password, $db_name);
 
@@ -736,7 +734,7 @@ function upgrade($args=NULL)
         print_testResult(RESULT_FAILED,"SQL-Error[" . __LINE__ . "]:<br><pre>".$sql_obj -> error."</pre><br><br>Querry was:<br>$str_query");
         return false;
     }
-    
+
     ### create new db-version ###
     $db_version_new= confGet('STREBER_VERSION');
     $streber_version_required= confGet('STREBER_VERSION');
@@ -748,7 +746,7 @@ function upgrade($args=NULL)
     else {
         print_testResult(RESULT_GOOD);
     }
-    
+
     ### rewrite setting-file ###
     {
     	$filename = "../" . confGet("DIR_SETTINGS") . confGet("SITE_SETTINGS");
@@ -758,8 +756,8 @@ function upgrade($args=NULL)
     		"EMAIL_ADMINISTRATOR" => $g_form_fields["site_email"]["value"],
     		'APP_TITLE_HEADER'    => $g_form_fields["site_name"]["value"] . "<span class=extend>PM</span>",
     	));
-    	
-		if(!$write_ok) 
+
+		if(!$write_ok)
 		{
             print_testResult(RESULT_FAILED, "can not write '" . $filename . "'.");
             /**
@@ -772,7 +770,7 @@ function upgrade($args=NULL)
         else {
             print_testResult(RESULT_GOOD);
         }
-    	
+
         $filename='../'. confGet('DIR_SETTINGS').  confGet('FILE_DB_SETTINGS');
         print_testStart("writing configuration file '$filename'...");
         $write_ok= writeSettingsFile($filename, array(
