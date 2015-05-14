@@ -11,16 +11,16 @@ $g_lang_table= array(
 'en_US.utf8,en_US,enu|list of locales'=>'de_DE.UTF8,de_DE@euro,de_DE,de,gede.utf8,deu,german',
 
 ### Oct 13, 2008  ->  13.Okt 2008
-'%b %e, %Y|strftime format string'=>'%e.%b %Y', 
+'%b %e, %Y|strftime format string'=>'%e.%b %Y',
 
 ### 1:34pm  ->  13:34
 '%I:%M%P|strftime format string'=>'%H:%M',
 
 ### Date -> Mon, 21.Okt 2008 23:34
-'%a %b %e, %Y %I:%M%P|strftime format string'=>'%a, %e.%b %Y %H:%M', 
+'%a %b %e, %Y %I:%M%P|strftime format string'=>'%a, %e.%b %Y %H:%M',
 
 ### Monday, October 12 -> "Montag, 12. Oktober"
-'%A, %B %e|strftime format string'=>'%A, %e.%B', 
+'%A, %B %e|strftime format string'=>'%A, %e.%B',
 
 'Office E-Mail'               =>'Büro E-Mail',
 
@@ -171,7 +171,7 @@ $g_lang_table= array(
 
 'Your bookmarks'          =>'Ihre Lesezeichen',
 'You have no bookmarks' =>'Sie haben keine Lesezeichen',
-'Remove bookmark'       =>'Lesezeichen entfernen', 
+'Remove bookmark'       =>'Lesezeichen entfernen',
 'Send notification'  	=>'Benachrichtigung schicken',
 'Remove notification'	=>'Benachrichtigung entfernen',
 'Remind'	            =>'Erinnerung',
@@ -372,7 +372,7 @@ $g_lang_table= array(
 'Select one or more bookmark(s).' 						 => 'Wählen Sie bitte ein oder mehrere Lesezeichen.',
 'Added %s bookmark(s).' 								 => '%s Lesezeichen wurde(n) hinzugefügt.',
 'Removed %s bookmark(s).' 								 => '%s Lesezeichen wurde(n) entfernt.',
-'ERROR: Cannot remove %s bookmark(s). Please try again.' => 'Fehler: %s Lesezeichen konnte nicht entfernt werden. Bitte versuchen Sie es erneut.', 
+'ERROR: Cannot remove %s bookmark(s). Please try again.' => 'Fehler: %s Lesezeichen konnte nicht entfernt werden. Bitte versuchen Sie es erneut.',
 'Edit bookmark'											 => 'Lesezeichen bearbeiten',
 'Edit bookmark: "%s"|page title'					     => 'Lesezeichen "%s" bearbeiten',
 'Bookmark: "%s"'									     => 'Lesezeichen "%s"',
@@ -384,8 +384,8 @@ $g_lang_table= array(
 '%s bookmark(s) could not be added.'					 => '%s Lesezeichen konnte(n) nicht hinzugefügt werden.',
 'Edited %s bookmark(s).'                                 => '%s Lesezeichen wurde(n) bearbeitet.',
 
-'Bookmark'												 => 'Lesezeichen',	
-'Remove Bookmark'						  			     => 'Lesezeichen entfernen',	
+'Bookmark'												 => 'Lesezeichen',
+'Remove Bookmark'						  			     => 'Lesezeichen entfernen',
 'Mark this person as bookmark'                           => 'Diese Person als Lesezeichen markieren',
 'Remove this bookmark'                                   => 'Dieses Lesezeichen entfernen',
 
@@ -455,7 +455,7 @@ $g_lang_table= array(
 'without account'             =>'ohne Account',
 'with account'				  =>'mit Account',
 'employees'                   =>'Mitarbeiter',
-'contact people'             =>'Ansprechpartner',	 
+'contact people'             =>'Ansprechpartner',
 
 'Create new project for this company'=>'Neues Projekt für Firma',
 'Add existing people to this company'=>'Existierende Person mit Firma verbinden',
@@ -1122,7 +1122,7 @@ $g_lang_table= array(
 'Changed monitored items:|notification'  	=> 'Geänderte Elemente:',
 'Unchanged monitored items:|notification'	=> 'Unveränderte Elemente:',
 '%s edited > %s'							=> '%s bearbeitete > %s',
-'%s (not touched since %s day(s))'          => '%s (nicht verändert seit %s Tag(en))', 
+'%s (not touched since %s day(s))'          => '%s (nicht verändert seit %s Tag(en))',
 
 'Tag line|form field for company'=>'Namenszusatz',
 'Short|form field for company'=>'Abkürzung',
@@ -1414,7 +1414,7 @@ $g_lang_table= array(
 
 'Streber Email Notification|notifcation mail from'=>'Streber Email Notification',
 'Updates at %s|notication mail subject'=>'Neues auf %s',
-'following happened at %s |notification'=>'folgendes auf %s passierte:',
+'the following happened at %s |notification'=>'folgendes auf %s passierte:',
 'Your account has been created.|notification'=>'Ihr Konto wurde eingerichtet.',
 'Please set password to activate it.|notification'=>'Setzen Sie ein Passwort zum Freischalten.',
 'You have been assigned to projects:|notification'=>'Sie wurden folgenden Projekten zugewiesen.',
@@ -2174,148 +2174,148 @@ $g_lang_table= array(
 
 
 ### ../pages/login.inc.php   ###
-'Welcome to %s', 'Notice after login'=>'Willkommen auf %s',  
+'Welcome to %s', 'Notice after login'=>'Willkommen auf %s',
 
 ### ../pages/misc.inc.php   ###
-'One notification sent'       =>'Eine Nachrichtig gesendet',  
-'%s notifications sent'       =>'%s Nachrichten gesendet',  
-'No notifications sent'       =>'Keine Nachricht gesendet',  
+'One notification sent'       =>'Eine Nachrichtig gesendet',
+'%s notifications sent'       =>'%s Nachrichten gesendet',
+'No notifications sent'       =>'Keine Nachricht gesendet',
 
 ### ../pages/person.inc.php   ###
-'Add task for this people (optionally creating project and effort on the fly)|Tooltip for page function'=>'Aufgabe und Projekt für diese Person erstellen',  
-'ASAP'                        =>'möglichst Bald',  
-'Filter own changes from recent changes list'=>'Eine Änderungen ausblenden',  
+'Add task for this people (optionally creating project and effort on the fly)|Tooltip for page function'=>'Aufgabe und Projekt für diese Person erstellen',
+'ASAP'                        =>'möglichst Bald',
+'Filter own changes from recent changes list'=>'Eine Änderungen ausblenden',
 
 ### ../pages/project_more.inc.php   ###
-'New project from'            =>'Neues Projekt von',  
-'all|Filter preset'           =>'alle',  
-'new|Filter preset'           =>'neu',  
-'open|Filter preset'          =>'offen',  
-'discounted|Filter preset'    =>'herabgesetzt',  
-'not chargeable|Filter preset'=>'nicht anrechenbar',  
-'balanced|Filter preset'      =>'ausgeglichen',  
-'last logout|Filter preset'   =>'letzter Logout',  
-'1 week|Filter preset'        =>'1 Woche',  
-'2 weeks|Filter preset'       =>'2 Wochen',  
-'3 weeks|Filter preset'       =>'3 Wochen',  
-'1 month|Filter preset'       =>'1 Monat',  
-'prior|Filter preset'         =>'Davor',  
+'New project from'            =>'Neues Projekt von',
+'all|Filter preset'           =>'alle',
+'new|Filter preset'           =>'neu',
+'open|Filter preset'          =>'offen',
+'discounted|Filter preset'    =>'herabgesetzt',
+'not chargeable|Filter preset'=>'nicht anrechenbar',
+'balanced|Filter preset'      =>'ausgeglichen',
+'last logout|Filter preset'   =>'letzter Logout',
+'1 week|Filter preset'        =>'1 Woche',
+'2 weeks|Filter preset'       =>'2 Wochen',
+'3 weeks|Filter preset'       =>'3 Wochen',
+'1 month|Filter preset'       =>'1 Monat',
+'prior|Filter preset'         =>'Davor',
 
 ### ../pages/task_more.inc.php   ###
-'Nickname not known in this project: %s'=>'Nickname nicht bekannt.',  
-'Requested feedback from: %s.'=>'Feedback von %s angefragt.',  
+'Nickname not known in this project: %s'=>'Nickname nicht bekannt.',
+'Requested feedback from: %s.'=>'Feedback von %s angefragt.',
 
 ### ../pages/task_view.inc.php   ###
-'Your feedback is requested by %s.'=>'%s möchte Ihre Meinung wissen.',  
-'Please edit or comment this item.'=>'Bitte jetzt bearbeiten oder kommentieren.',  
-'This task has no description. Doubleclick to edit.'=>'Dieses Objekt hat keine Beschreibung. Zum Bearbeiten doppelt klicken.',  
-'This topic does not have any text yet.\nDoubleclick here to add some.'=>'Dieses Thema hat noch keinen Text\nKlicken Sie doppelt, um etwas zu schreiben.',  
-'Request feedback'            =>'Nach Meinung fragen',  
+'Your feedback is requested by %s.'=>'%s möchte Ihre Meinung wissen.',
+'Please edit or comment this item.'=>'Bitte jetzt bearbeiten oder kommentieren.',
+'This task has no description. Doubleclick to edit.'=>'Dieses Objekt hat keine Beschreibung. Zum Bearbeiten doppelt klicken.',
+'This topic does not have any text yet.\nDoubleclick here to add some.'=>'Dieses Thema hat noch keinen Text\nKlicken Sie doppelt, um etwas zu schreiben.',
+'Request feedback'            =>'Nach Meinung fragen',
 
 
 ### ../render/render_wiki.inc.php   ###
-'Update|wiki change marker'   =>'Geändert',  
-'New|wiki change marker'      =>'Neu',  
-'Deleted|wiki change marker'  =>'Gelöscht',  
-'Item #%s is not an image'    =>'Object #%s ist kein Bild',  
-'Unkwown item %s'             =>'Unbekanntes Objekt %s',  
-'Cannot link to item #%s of type %s'=>'Verknüpfung zu Objekt #%s nicht möglich',  
+'Update|wiki change marker'   =>'Geändert',
+'New|wiki change marker'      =>'Neu',
+'Deleted|wiki change marker'  =>'Gelöscht',
+'Item #%s is not an image'    =>'Object #%s ist kein Bild',
+'Unkwown item %s'             =>'Unbekanntes Objekt %s',
+'Cannot link to item #%s of type %s'=>'Verknüpfung zu Objekt #%s nicht möglich',
 
 ### ../std/constant_names.inc.php   ###
-'Upcomming|release type'      =>'Angekündigt',  
-'ASAP|notification period'    =>'Sobald wie möglich',  
+'Upcomming|release type'      =>'Angekündigt',
+'ASAP|notification period'    =>'Sobald wie möglich',
 
 
 ### ../db/class_task.inc.php   ###
-'List title and description in project overview'=>'',  
-'Display folder as topic'     =>'Ordner als Thema anzeigen',  
+'List title and description in project overview'=>'',
+'Display folder as topic'     =>'Ordner als Thema anzeigen',
 
 ### ../lists/list_recentchanges.inc.php   ###
-'Also show your changes'      =>'Zeige auch eigene Änderungen',  
-'Hide your changes'           =>'Verstecke eigene Änderungen',  
-'Needs feedback'              =>'Braucht Feedback',  
+'Also show your changes'      =>'Zeige auch eigene Änderungen',
+'Hide your changes'           =>'Verstecke eigene Änderungen',
+'Needs feedback'              =>'Braucht Feedback',
 
 ### ../lists/list_tasks.inc.php   ###
-'Days until planned end'      =>'Tage bis zum Ende',  
-'Due|column header, days until planned end'=>'Tage',  
+'Days until planned end'      =>'Tage bis zum Ende',
+'Due|column header, days until planned end'=>'Tage',
 
 ### ../pages/_handles.inc.php   ###
-'Toggle filter own changes'   =>'Sichtbarkeit eigener Änderungen umschalten',  
+'Toggle filter own changes'   =>'Sichtbarkeit eigener Änderungen umschalten',
 
 ### ../pages/comment.inc.php   ###
-'Re: '                        =>'Re:',  
+'Re: '                        =>'Re:',
 
 ### ../pages/home.inc.php   ###
-'my blocked'                  =>'Meine Blockiert',  
-'needs feedback'              =>'Braucht Feedback',  
+'my blocked'                  =>'Meine Blockiert',
+'needs feedback'              =>'Braucht Feedback',
 
-'Welcome to %s|Notice after login'=>'Willkommen bei %s',  
+'Welcome to %s|Notice after login'=>'Willkommen bei %s',
 
 ### ../render/render_form.inc.php   ###
-'can not render form without valid user'=>'Formular kann nicht ohne gültigen Anwender bearbeitet werden.',  
+'can not render form without valid user'=>'Formular kann nicht ohne gültigen Anwender bearbeitet werden.',
 
 ### ../std/mail.inc.php   ###
-'Forgot your password or how to log in?|notification'=>'Passwort vergessen? Keine Ahnung, wie man sich anmeldet? Keine Lust auf diese Mails?',  
-'Request a mail to change your account settings.|notification'=>'Hier klicken, um eine E-Mail für Passwort- und News-Einstellungen anzufordern...',  
-'Click here:'                 =>'Hier klicken',  
+'Forgot your password or how to log in?|notification'=>'Passwort vergessen? Keine Ahnung, wie man sich anmeldet? Keine Lust auf diese Mails?',
+'Request a mail to change your account settings.|notification'=>'Hier klicken, um eine E-Mail für Passwort- und News-Einstellungen anzufordern...',
+'Click here:'                 =>'Hier klicken',
 
 ### ../db/class_task.inc.php   ###
-'List title and description in project overview'=>'Titel und Beschreibung im Projekt Überblick zeigen',  
+'List title and description in project overview'=>'Titel und Beschreibung im Projekt Überblick zeigen',
 
 
 ### ../lists/list_files.inc.php   ###
-'creatd on %s|date a file was created'=>'erstell am %s',  
-'click to show details'       =>'Details anzeigen',  
-'by %s|person who uploaded a file'=>'von %s',  
+'creatd on %s|date a file was created'=>'erstell am %s',
+'click to show details'       =>'Details anzeigen',
+'by %s|person who uploaded a file'=>'von %s',
 
 ### ../lists/list_recentchanges.inc.php   ###
-'No changes by others'        =>'Keine Änderungen von anderen',  
-'No changes yet'              =>'Keine Änderungen bisher',  
+'No changes by others'        =>'Keine Änderungen von anderen',
+'No changes yet'              =>'Keine Änderungen bisher',
 
 ### ../lists/list_tasks.inc.php   ###
-'Review'                      =>'Abnehmen?',  
-'Task status set to completed and needs approval.'=>'Aufgabe wurde fertiggestellt und muss abgenommen werden.',  
-'Item was approved on: %s:|date a task was approved'=>'Element wurde abgenommen am %s',  
-'done'                        =>'fertig',  
-'This task is planned to be completed today.'=>'Diese Aufgabe soll heute fertig werden.',  
-'Tomorrow'                    =>'Morgen',  
-'This task is planned to be completed tomorrow.'=>'Diese Aufgabe soll morgen fertig werden.',  
-'Next week'                   =>'Nächste Woche',  
-'due: %s'                     =>'fällig: %s',  
-'days'                        =>'Tage',  
-'this task is overdue!'       =>'Aufgabe überfällig',  
-'Pending'                     =>'steht aus',  
-'start: %s'                   =>'Start: %s',  
+'Review'                      =>'Abnehmen?',
+'Task status set to completed and needs approval.'=>'Aufgabe wurde fertiggestellt und muss abgenommen werden.',
+'Item was approved on: %s:|date a task was approved'=>'Element wurde abgenommen am %s',
+'done'                        =>'fertig',
+'This task is planned to be completed today.'=>'Diese Aufgabe soll heute fertig werden.',
+'Tomorrow'                    =>'Morgen',
+'This task is planned to be completed tomorrow.'=>'Diese Aufgabe soll morgen fertig werden.',
+'Next week'                   =>'Nächste Woche',
+'due: %s'                     =>'fällig: %s',
+'days'                        =>'Tage',
+'this task is overdue!'       =>'Aufgabe überfällig',
+'Pending'                     =>'steht aus',
+'start: %s'                   =>'Start: %s',
 
 ### ../pages/bookmark.inc.php   ###
-'Please select some items'    =>'Bitte wählen Sie einige Objekte.',  
+'Please select some items'    =>'Bitte wählen Sie einige Objekte.',
 
 ### ../pages/file.inc.php   ###
-'Uploaded new version of file with Id %s'=>'Neue Version mit Id #%s hochgeladen',  
-'Uploaded new file with Id %s'=>'Neue Datei mit Id #%s hochgeladen',  
-'Updated file with Id %s'     =>'Datei mit Id #%s hochgeladen',  
+'Uploaded new version of file with Id %s'=>'Neue Version mit Id #%s hochgeladen',
+'Uploaded new file with Id %s'=>'Neue Datei mit Id #%s hochgeladen',
+'Updated file with Id %s'     =>'Datei mit Id #%s hochgeladen',
 
 ### ../pages/person.inc.php   ###
-'Updated settings for %s.'    =>'Datei #%s aktualisiert.',  
+'Updated settings for %s.'    =>'Datei #%s aktualisiert.',
 
 ### ../render/render_misc.inc.php   ###
-'never'                       =>'niemals',  
-'just now'                    =>'jetzt',  
-'%smin ago'                   =>'vor %smin',  
-'%sh ago'                     =>'vor %s h',  
-'%s years ago'                =>'vor %s Jahren',  
+'never'                       =>'niemals',
+'just now'                    =>'jetzt',
+'%smin ago'                   =>'vor %smin',
+'%sh ago'                     =>'vor %s h',
+'%s years ago'                =>'vor %s Jahren',
 
 ### ../render/render_wiki.inc.php   ###
-'Link to this chapter'        =>'Lesezeichen zu diesem Kapitel',  
+'Link to this chapter'        =>'Lesezeichen zu diesem Kapitel',
 
 ### ../std/constant_names.inc.php   ###
-'View all Companies|a user right'=>'Alle Firmen zeigen',  
+'View all Companies|a user right'=>'Alle Firmen zeigen',
 
 ### ../std/mail.inc.php   ###
-'Please use this link to'     =>'Bitte verwenden Sie diesen Link,',  
-'update your account settings'=>'um Ihre Einstellungen zu bearbeiten.',  
-'late|time status of a task'  =>'verspätet',  
-'remain|time status of a task'=>'bleibt',  
+'Please use this link to'     =>'Bitte verwenden Sie diesen Link,',
+'update your account settings'=>'um Ihre Einstellungen zu bearbeiten.',
+'late|time status of a task'  =>'verspätet',
+'remain|time status of a task'=>'bleibt',
 'invalid Person #%s'          =>'Ungültige Person mit Id %s',
 'Reverting user changes'      =>'Änderungen der Person werden rückgängig gemacht.',
 'Skipped recently editted item #%s: <b>%s<b>'=>'überspringe bearbeitete Item #%s: %s',

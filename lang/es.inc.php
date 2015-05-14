@@ -3,7 +3,7 @@
 /**
 * translated into: Spanish
 *
-*    translated by: Cristhian Vivanco	
+*    translated by: Cristhian Vivanco
                     cvivanco@aerocardal.com
 *
 *             date: 10- OCt 2006
@@ -23,7 +23,7 @@ $g_lang_table= array(
 '%I:%M%P|strftime format string'=>'%H:%M hrs',
 '%a %b %e, %Y %I:%M%P|strftime format string'=>'%a %e %b del %Y a las %H:%M hrs',
 '%s min'                      =>'% minutos',
-'%A, %B %e|strftime format string'=>'',  
+'%A, %B %e|strftime format string'=>'',
 'en_US.utf8,en_US,enu|list of locales'=>'LC_ALL,es-ES.utf8,es_ES,es,sp,spanish,es_ES@euro,esp_ESP,es-ES.iso8859-1,esp-ESP.iso8859-1,es-ES.iso-8859-1,esp-ESP.iso-8859-1,es-iso-8859-1',
 
 'new'                         =>'nuevo',
@@ -1398,7 +1398,7 @@ $g_lang_table= array(
 'Hello %s,|notification'      =>'Hola %s',
 'with this automatically created e-mail we want to inform you that|notification'=>'con este email creado automáticamente queremos informale que ',
 'since %s'                    =>'desde %s',
-'following happened at %s |notification'=>'lo siguiente ha ocurrido %s',
+'the following happened at %s |notification'=>'lo siguiente ha ocurrido %s',
 'Your account has been created.|notification'=>'Su cuenta ha sido creada.',
 'Please set password to activate it.|notification'=>'Por favor cree contraseña para activarla',
 'You have been assigned to projects:|notification'=>'Ha sido asignado a proyectos:',

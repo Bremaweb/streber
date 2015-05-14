@@ -21,7 +21,7 @@
 */
 
 /**
-* translation into: 
+* translation into:
 * Simplified Chinese
 * 简体中文
 * UTF-8
@@ -32,7 +32,7 @@
 *
 *  streber version: 0.0902
 *
-*         comments: 
+*         comments:
 *  V0.002	2009.4.15--first release, just translate the common word on the interface. 先翻译界面常用文字
 */
 
@@ -1452,7 +1452,7 @@ $g_lang_table= array(
 'Hello %s,|notification'      =>'你好 %s,',
 'with this automatically created e-mail we want to inform you that|notification'=>'',
 'since %s'                    =>'',
-'following happened at %s |notification'=>'',
+'the following happened at %s |notification'=>'',
 'Your account has been created.|notification'=>'',
 'Please set a password to activate it.|notification'=>'',
 'You have been assigned to projects:|notification'=>'',

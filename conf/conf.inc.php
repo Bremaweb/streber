@@ -326,6 +326,7 @@ $g_config= array(
 	'SMTP_PASSWORD'		=> '',
 	'SMTP_SECURE'			=> '', /* Values are: SSL, TLS, or nothing */
 	'EMAIL_FROM'		=> '',
+	'NOTIFICATION_FROM'=> 'Administrator',
 
 	// WORK OUR SETTINGS
     'WORKHOURS_PER_DAY' =>10,

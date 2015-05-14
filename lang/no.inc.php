@@ -1483,7 +1483,7 @@ $g_lang_table= array(
 ### ../std/mail.inc   ###
 'Streber Email Notification|notifcation mail from'=>'Systemizer prosjekt melding',
 'Updates at %s|notication mail subject'=>'Oppdateringer på %s',
-'following happened at %s |notification'=>'følgende hendte på %s:',
+'the following happened at %s |notification'=>'følgende hendte på %s:',
 'Your account has been created.|notification'=>'Din konto er opprettet.',
 'Please set password to activate it.|notification'=>'Skriv inn et passord for å aktivere den.',
 'You have been assigned to projects:|notification'=>'Du ble tildelt følgende prosjekt(er):',
