@@ -38,11 +38,12 @@ class Email
     public function __construct($person)
     {
     	$from = ( confGet('EMAIL_FROM') == "" ? "donotreply@" . $this->from_domain : confGet('EMAIL_FROM') );
+    	$from_name = ( confGet('EMAIL_FROM_NAME') == "" ? confGet('APP_NAME') . "Notification" : confGet('EMAIL_FROM_NAME') );
         $this->errors= Array();
         $this->recipient= $person;
         $this->url= confGet('SELF_PROTOCOL').'://'.confGet('SELF_URL');
         $this->from_domain = confGet('SELF_DOMAIN');;
-        $this->from = array(__('Streber Email Notification','notifcation mail from'), $from);
+        $this->from = array($from_name, $from);
         $this->reply = $from;
         $this->to = $person->getValidEmailAddress();
         if(!$this->to) {

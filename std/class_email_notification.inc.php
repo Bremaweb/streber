@@ -332,11 +332,6 @@ class EmailNotification extends Email
               . "<a href='$this->url?go=loginForgotPasswordSubmit&amp;login_name={$this->recipient->nickname}'>"
               . __('Request a mail to change your account settings.','notification')
               . "</a></span>"
-              . "."
-              . "<br>"
-              . "<br>"
-              . __('Thanks for your time','notification') . "<br>"
-              . confGet('NOTIFICATION_FROM')
               . "</body>\n\r"
               . "</html>";
 

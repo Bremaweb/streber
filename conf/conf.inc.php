@@ -17,7 +17,7 @@ global $g_config;
 $g_config= array(
 
     'STREBER_VERSION'       => '0.095',
-    'STREBER_VERSION_DATE'  => '2012-10-05',
+    'STREBER_VERSION_DATE'  => '2015-14-05',
 
     'APP_NAME'              => 'streber',
     'APP_PAGE_URL'          => 'http://www.streber-pm.org',
@@ -326,7 +326,7 @@ $g_config= array(
 	'SMTP_PASSWORD'		=> '',
 	'SMTP_SECURE'			=> '', /* Values are: SSL, TLS, or nothing */
 	'EMAIL_FROM'		=> '',
-	'NOTIFICATION_FROM'=> 'Administrator',
+	'EMAIL_FROM_NAME'=> 'Administrator',
 
 	// WORK OUR SETTINGS
     'WORKHOURS_PER_DAY' =>10,
