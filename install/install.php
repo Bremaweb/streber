@@ -379,6 +379,7 @@ function step_02_proceed()
                         'db_name'       => $f_db_name,
                         'db_version'    => $db_version,                    # autodetect
                         'continue_on_sql_errors'=>$f_continue_on_sql_errors,
+                    	'sql_obj' => $sql_obj
                     ));
                     return $result;
 
@@ -462,6 +463,7 @@ function step_02_proceed()
                 'db_name'       => $f_db_name,
                 'continue_on_sql_errors'=>$f_continue_on_sql_errors,
                 'db_version'    => $upgradeFromVersion,
+            	'sql_obj' => $sql_obj
             ));
             if(!$result) {
                 print_testResult(RESULT_FAILED,"Upgrading failed. This is an internal error. Look at ". getStreberWikiLink('installation','Installation Guide') ." for clues. ");
@@ -639,26 +641,30 @@ function upgrade($args=NULL)
     $db_name=           $args['db_name'];
     $flag_continue_on_sql_errors= $args['continue_on_sql_errors'];
     $db_version=        $args['db_version'];            # set to NULL if autodetect
+    $sql_obj = $args['sql_obj'];
 
-    require_once(dirname(__FILE__)."/../db/db_".$db_type."_class.php");
+    //require_once(dirname(__FILE__)."/../db/db_".$db_type."_class.php");
 
     echo "<h2>Upgrading...</h2>";
     print_testStart("getting original version...");
 
-    ### connect db ###
-    $sql_obj = new sql_class($hostname, $db_username, $db_password, $db_name);
+    // reconnecting to the db in the function is nonsense
 
-    if($sql_obj -> error != false) {
-        print_testResult(RESULT_FAILED,"mySQL-Error[" . __LINE__ . "]:<pre>".$sql_obj -> error."</pre>");
+    ### connect db ###
+    //$sql_obj = new sql_class($hostname, $db_username, $db_password, $db_name);
+	//echo "sql_class($hostname, $db_username, $db_password, $db_name)";
+	/*
+    if($sql_obj->error != false) {
+        print_testResult(RESULT_FAILED,"mySQL-Error[" . __LINE__ . "]:<pre>".$sql_obj -> error." " . $sql_obj->errorno . "</pre>");
         return false;
     }
 
     ### select db? ###
     if(!$sql_obj->selectdb()) {
-        print_testResult(RESULT_FAILED,"Database does not exists mySQL-Error[" . __LINE__ . "]:<pre>".$sql_obj -> error."</pre>");
+        print_testResult(RESULT_FAILED,"Database does not exists mySQL-Error[" . __LINE__ . "]:<pre>".$sql_obj -> error." " . $sql_obj->errorno . "</pre>");
         return false;
     }
-
+	*/
     ### get version ###
     if(!$db_version)
     {
