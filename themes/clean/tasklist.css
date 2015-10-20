@@ -11,7 +11,7 @@
   position: absolute;  
   top:60px;
   left:0;
-  right:60%;
+  right:70%;
   bottom:0;
   overflow: scroll;
   padding-top:50px;  
@@ -32,7 +32,7 @@
   background: linear-gradient(to bottom, rgba(240,240,240,1) 50%,rgba(220,220,220,0) 100%); /* W3C */
   top:60px;
   left:0;
-  right:60%;
+  right:70%;
   height:80px;
 }
 
@@ -68,7 +68,7 @@ div.details-container {
   background-color:#fff;
   box-shadow: rgba(0,0,0,0.3) 0px 3px 8px;
   /*float:right;*/
-  width:60%;
+  width:70%;
   top:60px;
   right:0;
   bottom:0;

@@ -45,7 +45,7 @@ function projViewTasks()
     $page->extra_header_html .= '<script type="text/javascript" src="js/jquery.event.drag-2.2.js"></script>';
     $page->extra_header_html .= '<script type="text/javascript" src="js/tasklist.js"></script>';
     $page->extra_header_html .= '<script type="text/javascript" src="js/jquery.scrollintoview.js"></script>';
-    
+
 
     ### init known filters for preset ###
     $list= new ListBlock_tasks(array(
@@ -105,12 +105,12 @@ function projViewTasks()
         echo "<div class='details-container'>";
         echo "<div class='tip'>";
         echo __("Select a task from the left");
-        echo "</div>";    
+        echo "</div>";
         echo "</div>";
     }
     echo "<div class='page-content'>";
-    
-    
+
+
 
     echo (new PageContentOpen);
 
@@ -139,7 +139,7 @@ function projViewTasks()
         'status_max'=> 5,
     ));
 
-    
+
     $l = count($milestones);
     foreach($milestones as $milestone) {
         $tasks = Task::getAll(array(
@@ -150,7 +150,7 @@ function projViewTasks()
             'status_max'=> 5,
             'for_milestone' => $milestone->id,
             'order_by' => 'order_id',
-        ));        
+        ));
         renderTaskGroup($tasks, $milestone->name, $milestone->id, $project->id, $milestone->view_collapsed);
     }
     echo "</div>";  // /task-list
@@ -169,14 +169,14 @@ function renderTaskGroup($tasks, $title, $milestone_id, $project_id, $view_colla
 {
     echo "<div class='task-group' data-milestone-id='$milestone_id'  data-project-id='$project_id' >";
     echo "<h2>";
-    
+
     if($view_collapsed) {
         echo "<div class='icon closed'><div class='wrap-toggle'></div></div>";
     }
     else {
-        echo "<div class='icon open'><div class='wrap-toggle'>-</div></div>";    
+        echo "<div class='icon open'><div class='wrap-toggle'>-</div></div>";
     }
-    
+
 
     echo $title;
 
@@ -191,12 +191,12 @@ function renderTaskGroup($tasks, $title, $milestone_id, $project_id, $view_colla
     echo "<a class='new-task'>".__("Add new") . "</a>";
     echo "</li>";
     echo "</ol>";
-    
+
     echo "</div>";
 }
 
 
-function buildListEntryForTask($task) 
+function buildListEntryForTask($task)
 {
     global $auth;
     $classIsDone = $task->isDone() ? "isDone":'';
@@ -220,21 +220,21 @@ function buildListEntryForTask($task)
 
     $newMarker = '';
     switch($task->isChangedForUser()) {
-    case 1: 
+    case 1:
         $newMarker = "<span class='isNew'>". __("new") . "</span>";
         break;
-    case 2: 
+    case 2:
         $newMarker = "<span class='isNew'>". __("updated") . "</span>";
         break;
     }
-    
+
 
     $additionalInfo = $task->buildTypeText();
     $comments = $task->getComments();
     if( count($comments) ) {
         $additionalInfo.= " / ". sprintf(__("%s comments"), count($comments));
     }
-    return 
+    return
      "<li id='task-{$task->id}' data-id='{$task->id}' class='$classIsDone dragable'>"
     ."<section class='itemfield' item_id='{$task->id}'' field_name='name'>$task->name $newMarker</section>"
     ."<small>$additionalInfo $assignments</small>"
