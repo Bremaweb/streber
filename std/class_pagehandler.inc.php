@@ -240,7 +240,7 @@ class PageHandler extends BaseObject
     public function getUrl($id=NULL, $params=NULL, $amp= "&amp;")
     {
         global $auth;
-        
+
 
         if(!$id || !isset($this->hash[$id]) ) {
             trigger_error("id '$id' is not valid ".confGet('LINK_REPORT_BUGS'),E_USER_WARNING);
@@ -253,29 +253,29 @@ class PageHandler extends BaseObject
             /**
             * auth could not be defined, if unit-tests running...
             */
-            if( !isset($auth) 
-                || !isset($auth->cur_user) 
+            if( !isset($auth)
+                || !isset($auth->cur_user)
                 || !($phandle->rights_required & $auth->cur_user->user_rights)
-                
-            
+
+
             ) {
                 return NULL;
             }
         }
-        
+
         /*
         * Hide modifications links from guest user.
         * Accessing this links directly will be prevented in index.php
-        */        
-        if( isset($auth) && $auth->isAnonymousUser() 
+        */
+        if( isset($auth) && $auth->isAnonymousUser()
             && ($auth->isAnonymousUser() && $phandle->type == 'form' || $phandle->type == 'subm' || $phandle->type == 'func')
         ) {
             return NULL;
         }
-        
+
         ### valid user? ###
         if(!$phandle->valid_for_crawlers && Auth::isCrawler()) {
-            return NULL;            
+            return NULL;
         }
 
         $str_params='';
@@ -334,7 +334,7 @@ class PageHandler extends BaseObject
         }
 
         $buffer= "index.php?go={$id}{$str_params}";
-
+/*
         if(confGet('USE_MOD_REWRITE')) {
             /*
             $clean_urls= array(
@@ -359,7 +359,7 @@ class PageHandler extends BaseObject
 
             }
             */
-
+/*
             if($url= $phandle->cleanurl) {
                 if($phandle->cleanurl_mapping) {
                     foreach($phandle->cleanurl_mapping as $old => $new) {
@@ -375,6 +375,7 @@ class PageHandler extends BaseObject
                 $buffer= $url;
             }
         }
+*/
         return $buffer;
     }
 
@@ -631,12 +632,12 @@ class PageHandler extends BaseObject
                 $go= $PH->getPage($params['go'])->id;       # be sure the page-id is value
                 unset($params['go']);                       # don't pass the id as param
                 $PH->show($go,$params);
-                
+
                 /**
-                * Although the following alternative works very nice in theory, 
+                * Although the following alternative works very nice in theory,
                 * we have to implement a way, to store the flash notices either
                 * in a session variable or somewhere in the database.
-                * 
+                *
                 * FlashNotices
                 *  uid, timestamp, message
                 */
@@ -669,19 +670,19 @@ class PageHandler extends BaseObject
         $crawler= Auth::isCrawler()
                 ? 'crawler'
                 : '';
-                                  
+
         log_message($user_name . '@' .  getServerVar('REMOTE_ADDR', true) . " -> $id ". getServerVar('REQUEST_URI') . "  (" . getServerVar('HTTP_USER_AGENT') . ") $crawler"  , LOG_MESSAGE_DEBUG);
 
         if(!$id) {
             $this->show('home');
             exit;
         }
-        
+
         else if( $id != asAlphaNumeric($id)) {
             new FeedbackWarning("Ignored invalid page '". asCleanString($id) ."'");
             $this->show('home');
             exit;
-        }            
+        }
         else if(!isset($this->hash[$id]) ) {
             trigger_error('try to show undefined page-id '.$id, E_USER_WARNING);
             $this->show('error');
@@ -703,15 +704,15 @@ class PageHandler extends BaseObject
         if($handle->rights_required && !($handle->rights_required & $auth->cur_user->user_rights)) {
             $this->abortWarning("insufficient rights");
         }
-        
+
         ### hide modification pages from guests ###
         /**
         * Note: for some reason, this interfers with unit testing. Using the user agent for this
         * check here is extremely dirty, because it can be faked from attackers. This will not lead
         * to a result, because it switches the database for unit testing, though.
-        */    
+        */
         if(getServerVar('HTTP_USER_AGENT') != 'streber_unit_tester') {
-            if( isset($auth) 
+            if( isset($auth)
                 && $auth->isAnonymousUser()
                 && !$handle->valid_for_anonymous
                 && ($handle->type == 'form' || $handle->type == 'subm' || $handle->type == 'func')
@@ -740,7 +741,7 @@ class PageHandler extends BaseObject
             }
         }
 
-        #--- set params ---        
+        #--- set params ---
         if($params) {
 #            global $vars;
 #            foreach($params as $key=>$value) {
@@ -842,14 +843,14 @@ class PageHandler extends BaseObject
         else {
             if($page == "WikiSyntax") {
             $page = confGet('STREBER_WIKISYNTAX');
-            }        
+            }
             if(!$alt_title) {
                 $alt_title= $page;
             }
             return "<a href='" . confGet('STREBER_WIKI_URL').  "{$page}' target='_blank'>$alt_title</a>";
         }
     }
-    
+
 
     public function getCSVLink($page=NULL, $format= FORMAT_CSV) {
         if(is_null($page)) {
@@ -871,22 +872,22 @@ class PageHandler extends BaseObject
 
 
     }
-    
+
     /**
     * return requested pagehandle or loginForm if not valid
     *
     * Does not check for user rights
     */
 
-    public function getRequestedPage() 
-    {  
+    public function getRequestedPage()
+    {
 
         if(isset($this->hash[get('go')])) {
             return $this->hash[get('go')];
         }
         else {
             return $this->hash['loginForm'];
-        }       
+        }
     }
 
 
