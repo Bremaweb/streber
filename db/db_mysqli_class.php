@@ -40,7 +40,7 @@ class sql_class implements sql_interface{
     private $user; # string: DB User
     private $pwd; # string: DB Password
     private $database; # string: DB database
-    private $connect=false; # resource: DB connection
+    private $connection=false; # resource: DB connection
     private $result; # resource: result SQL Query
     private $lastId; # integer/string: last Id
 
@@ -85,12 +85,12 @@ class sql_class implements sql_interface{
     /**
     * accessing connect for MySQLiError output
     */
-    public function getConnect() 
+    public function getConnect()
     {
-        return $this->connect;
+        return $this->connection;
     }
-    
-    
+
+
     /**
     * method error: Set error msg
     */
@@ -102,7 +102,7 @@ class sql_class implements sql_interface{
     * method connect: Connect DB
     */
     public function connect(){
-        if($this->connect = @mysqli_connect(
+        if($this->connection = @mysqli_connect(
             $this->server,
             $this->user,
             $this->pwd
@@ -115,7 +115,7 @@ class sql_class implements sql_interface{
     }
 
     public function selectdb(){
-        if(@mysqli_select_db($this->connect, $this->database)){
+        if(@mysqli_select_db($this->connection, $this->database)){
             $this->error('Database '.$this->database.' exists');
             return true;
         }
@@ -129,7 +129,7 @@ class sql_class implements sql_interface{
     */
     public function execute($tmp_query){
 
-        if($this->result = @mysqli_query($this->connect, $tmp_query)){
+        if($this->result = @mysqli_query($this->connection, $tmp_query)){
             $this->error('Query successful: '.$tmp_query);
             if(DEBUG_SQL_DISPLAY == 1){echo $tmp_query.'<br /><br />';}
             return true;
@@ -171,14 +171,14 @@ class sql_class implements sql_interface{
     * method secure: secure variable
     */
     public function secure($var){
-        return mysqli_real_escape_string($this->connect, $var);
+        return mysqli_real_escape_string($this->connection, $var);
     }
 
     /**
     * method lastId: get last ID
     */
     function lastId(){
-        $this->lastId = mysqli_insert_id($this->connect);
+        $this->lastId = mysqli_insert_id($this->connection);
 
         if(DEBUG_SQL_DISPLAY == 1){echo 'LAST ID: '.$this->lastId.'<br />';}
         return $this->lastId;

@@ -5,12 +5,15 @@
 
 require_once(confGet('DIR_STREBER') . './std/mail.inc.php');
 
+/* Sending e-mails with phpMailer. Going to go ahead and let to class mostly work like it has then implement phpMailer in the send() method */
+require_once(confGet('DIR_STREBER') . 'std/phpmailer/PHPMailerAutoload.php');
+
 /**
- * This base class handles the necessary work to sent a Email to a given recipient:
+ * This base class handles the necessary work to send an Email to a given recipient:
  * - temporarily changing current user
  * - rendering of correct links to items
  * - providing correct linebreaks
- * 
+ *
  * Deriving classes should overwrite buildSubject and buildBody
  *
  * Example usage:
@@ -31,42 +34,36 @@ class Email
     public    $errors;
     protected $from;
     public      $to;
-    
+
     public function __construct($person)
     {
+    	$from = ( confGet('EMAIL_FROM') == "" ? "donotreply@" . $this->from_domain : confGet('EMAIL_FROM') );
+    	$from_name = ( confGet('EMAIL_FROM_NAME') == "" ? confGet('APP_NAME') . "Notification" : confGet('EMAIL_FROM_NAME') );
         $this->errors= Array();
         $this->recipient= $person;
         $this->url= confGet('SELF_PROTOCOL').'://'.confGet('SELF_URL');
-        $this->from_domain = confGet('SELF_DOMAIN');
-
-        $customSender= confGet('NOTIFICATION_EMAIL_SENDER');
-        if($customSender) {
-            $this->from = $customSender;
-            $this->reply= $customSender;
-        }
-        else {
-            $this->from = __('Streber Email Notification','notifcation mail from') . " <do-not-reply@".$this->from_domain.">";
-            $this->reply="do-not-reply@$this->from_domain";
-        }
+        $this->from_domain = confGet('SELF_DOMAIN');;
+        $this->from = array($from_name, $from);
+        $this->reply = $from;
 
         $this->to = $person->getValidEmailAddress();
         if(!$this->to) {
             $this->errors[]= _('no person does not have an Email-address','notification');
         }
-        
+
         $this->setRecipient($person);
         $this->initSubject();
         $this->initBody();
         $this->resetCurrentUser();
     }
-    
-    
+
+
     protected function initBody()
     {
         $this->body_plaintext = $this->body_html = "...insert text here...";
     }
-    
-    
+
+
     /**
     * Sends the mail
     *
@@ -82,44 +79,30 @@ class Email
         if($this->errors) {
             return false;
         }
-
-        $eol= "\n"; #getEndOfLine();
-
-        $boundary= "-streber--------------------------------------";
-
-        ### headers  ###
-        $headers="";
-        $headers .= "Content-Type: multipart/alternative; boundary=\"".$boundary."\"".$eol;
-        $headers .= "From: $this->from". $eol;
-        $headers .= 'MIME-Version: 1.0'.$eol;
-
-        $msg     = "Content-Type: multipart/alternative".$eol
-                . "--".$boundary. $eol
-                . "Content-Type: text/plain; charset=UTF-8". $eol. $eol
-                . $this->body_plaintext
-                . $eol
-                . "--".$boundary.$eol
-                . "Content-Type: text/html; charset=UTF-8". $eol
-                . $eol
-                . $this->body_html
-                . $eol
-                . $eol
-                . "--".$boundary."--". $eol.$eol
-                ;
-                
-
-        /**
-        * NOTE: capturing error-output of mail is done in errorhandler.inc,
-        * it sets the global variable $g_error_mail
-        */
-        mail($this->to, $this->subject, $msg, $headers);
-        
-        global $g_error_mail;
-        if(isset($g_error_mail)) {
-            $error= asHtml( $g_error_mail. ' ("'. $to. '" <'. $this->recipient->name .'>)' );
-            $g_error_mail= NULL;
-            return $error;
-        }
+		try{
+			log_message("Sending e-mail to " . $this->to);
+			log_message(confGet('SMTP') . ":" . confGet('SMTP_PORT'));
+			$mailer = new phpMailer(true);
+			$mailer->IsSMTP();
+			$mailer->Host = confGet('SMTP');
+			$mailer->Port = confGet('SMTP_PORT');
+			if ( confGet('SMTP_USE_AUTH') == true ){
+				$mailer->SMTPAuth = true;
+				$mailer->Username = confGet('SMTP_USERNAME');
+				$mailer->Password = confGet('SMTP_PASSWORD');
+				$mailer->SMTPSecure = confGet('SMTP_SECURE');
+			}
+			$mailer->SetFrom($this->from[1],$this->from[0]);
+			$mailer->AddReplyTo($this->from[1],$this->from[0]);
+			$mailer->Subject = $this->subject;
+			$mailer->AddAddress($this->to, $this->recipient->name);
+			$mailer->MsgHTML($this->body_html);
+			$mailer->Send();
+		} catch (phpmailerException $e){
+			log_message( $e->errorMessage() . $this->to . " <" . $this->recipient->name .">", ERROR_FATAL);
+			$error = asHtml( $e->errorMessage() . ' ("'. $this->to. '" <'. $this->recipient->name .'>)' );
+			return $error;
+		}
         return true;
     }
 
@@ -140,24 +123,24 @@ class Email
     * Temporary overwrite the current-user to obey item-visibility and current language settings
     * MUST BE RESET BEFORE LEAVING THIS FUNCTION by calling resetCurrentUser
     */
-    private function setRecipient($person) 
+    private function setRecipient($person)
     {
         global $auth;
         $this->keep_cur_user= $auth->cur_user;
         $auth->cur_user= $person;
         $this->recipient= $person;
-        setLang($person->language);        
+        setLang($person->language);
     }
-        
+
     private function resetCurrentUser()
     {
         global $auth;
-        $auth->cur_user = $this->keep_cur_user;        
+        $auth->cur_user = $this->keep_cur_user;
         if(isset($auth->cur_user->language)) {
             setLang($auth->cur_user->language);
         }
     }
-    
+
     protected function getItemLink($id, $title)
     {
         return "<a href='" . $this->getUrlToItem($id) . "'>". asHtml($title) . "</a>";
@@ -169,9 +152,9 @@ class Email
     protected function getUrlToItem($id)
     {
         $url= confGet('SELF_PROTOCOL').'://'.confGet('SELF_URL'); # returns something like http://localhost/streber/index.php
-        
+
         if(confGet('USE_MOD_REWRITE')) {
-            $url= str_replace('index.php','',$url);  
+            $url= str_replace('index.php','',$url);
             return $url . "/" . intval($id);
         }
         else {
@@ -184,9 +167,9 @@ class Email
         return $this->recipient->settings & USER_SETTING_SEND_ACTIVATION;
     }
 
-    protected function buildActivationUrl() 
+    protected function buildActivationUrl()
     {
-        return $this->url . "?go=activateAccount&tuid=". $this->recipient->identifier;        
+        return $this->url . "?go=activateAccount&tuid=". $this->recipient->identifier;
     }
 
 

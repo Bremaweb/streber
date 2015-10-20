@@ -2052,7 +2052,7 @@ global $g_lang_table;$g_lang_table= array(
 'with this automatically created e-mail we want to inform you that|notification'
                               => 'этим автоматическим уведомлением мы хотим уведомить вас в том, что', #135
 'since %s'                    => 'спустя %s',                      #140
-'following happened at %s |notification'
+'the following happened at %s |notification'
                               => 'следующее произошло в %s',       #147
 'Your account has been created.|notification'
                               => 'Ваш аккаунт создан',             #157
@@ -2281,5 +2281,5 @@ global $g_lang_table;$g_lang_table= array(
 'Click here:'                 =>'Нажмите тут:',  # line 465
 'Please use this link to'     =>'Используйте ссылку на',  # line 621
 'update your account settings'=>'обновите настройки вашего аккаунта',  # line 624
-                              
+
 'x'=>'x');?>

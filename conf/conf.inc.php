@@ -17,8 +17,7 @@ global $g_config;
 $g_config= array(
 
     'STREBER_VERSION'       => '0.0971',
-    'STREBER_VERSION_DATE'  => '2014-05-05',
-
+    'STREBER_VERSION_DATE'  => '2015-10-20',
     'APP_NAME'              => 'streber',
     'APP_PAGE_URL'          => 'http://www.streber-pm.org',
     'PHP_VERSION_REQUIRED'  =>  '5.0.0',
@@ -64,10 +63,10 @@ $g_config= array(
 
     /**
     * url to online-help
-    */                                
+    */
     'STREBER_WIKI_URL' => 'http://www.streber-pm.org/index.php?go=search&search_query=',
     'STREBER_WIKISYNTAX' => 'WikiSyntax!',
-    
+
     /**
     * version of databases created by installation
     *
@@ -109,7 +108,7 @@ $g_config= array(
                              | USER_SETTING_NOTIFY_ASSIGNED_TO_PROJECT
                              | USER_SETTING_ENABLE_EFFORTS
                              | USER_SETTING_ENABLE_BOOKMARKS),
-                             
+
 
     /**
     * this will measure the microtimes for some rendering and db-processes.
@@ -119,8 +118,8 @@ $g_config= array(
     * see std/profile.inc
     */
     'USE_PROFILER'          =>false,
-    
-    
+
+
 
     /**
     * Display error-output, which would have been written to error.log as html.
@@ -171,7 +170,7 @@ $g_config= array(
     * This check should only be disabled for development convenience
     */
     'STOP_IF_INSTALL_DIRECTORY_EXISTS' => true,
-    
+
     /**
     * NUMBER in theme-list
     */
@@ -204,7 +203,7 @@ $g_config= array(
     */
     'TASK_LIST_EFFORT_COLUMN'=>false,
     'TASK_LIST_EFFORT_RELATION_COLUMN'=>false,
-	
+
 
     'LINK_REPORT_BUGS'=> " Please help us by  <a href='http://www.streber-pm.org/2717'>reporting a bug</a>",
 
@@ -219,8 +218,8 @@ $g_config= array(
                     Problem: <b>",
 
     /**
-    * You can override the activation message a new user receives after her 
-    * account has been created. 
+    * You can override the activation message a new user receives after her
+    * account has been created.
     *
     * IMPORTANT: both message must include precisely one %s, which will be replaced
     * with the url of the activation link.
@@ -329,7 +328,19 @@ $g_config= array(
     'ENABLE_GUEST_ACCOUNT'=> false,
     'REGISTER_NEW_USERS_TO_PROJECT'=> 0,
 
-    'SMTP'              =>'',
+	/**
+	 * Use php's smtp settings as the default smtp settings
+	 */
+    'SMTP'              => ini_get('SMTP'),
+	'SMTP_PORT'			=> ini_get('smtp_port'),
+	'SMTP_USE_AUTH'		=> false,
+	'SMTP_USERNAME'		=> '',
+	'SMTP_PASSWORD'		=> '',
+	'SMTP_SECURE'			=> '', /* Values are: SSL, TLS, or nothing */
+	'EMAIL_FROM'		=> '',
+	'EMAIL_FROM_NAME'=> 'Administrator',
+
+	// WORK OUR SETTINGS
     'WORKHOURS_PER_DAY' =>10,
     'WORKDAYS_PER_WEEK' =>5,
 
@@ -348,12 +359,12 @@ $g_config= array(
     * use mod_rewrite clean urls
     */
     'USE_MOD_REWRITE'=> false,
-	
+
 	/**
 	* cost overview
 	*/
 	'INTERNAL_COST_FEATURE' => false,
-	
+
     /**
     * posts by anonymous users are rejected, if they contain any of these keys.
     * The value is an indicator for spam probability.
@@ -368,12 +379,12 @@ $g_config= array(
     *   0.1    - loose
     */
     'REJECT_SPAM_CONTENT' => 0.002,
-    
+
     /**
     * enables the sideboard, which is been been displayed on the
     * right side of the screen after a row in a task list has been
-    * selected. Currenty only displays description and allows quick wiki 
-    * editing.   
+    * selected. Currenty only displays description and allows quick wiki
+    * editing.
     */
     'TASKDETAILS_IN_SIDEBOARD' => false,
 
@@ -389,7 +400,7 @@ $g_config= array(
     'MAX_CHANGELINES_PER_PROJECT'=> 5,
     'MAX_CHANGELINES'=> 20,
     'MORE_CHANGELINES'=> 20,
-	
+
 	/**
 	* LDAP Settings
 	*/

@@ -10,7 +10,7 @@
 * - Avoid...
 *   - quotes inside strings
 *   - linebreaks inside strings
-* - Characters behind the pipe ('|') are just for clarifying the context. 
+* - Characters behind the pipe ('|') are just for clarifying the context.
 *   Do not translate them!
 * - Rename this file into "??.inc" where as "??" being the apache-shortcut of the language (like "en").
 * - Add the language definition to "conf/conf.inc" (search for $g_languages)
@@ -1398,7 +1398,7 @@ commento. La struttura del database potrebbe essere corrotta',  # line 2297
 'Hello %s,|notification'      =>'Ciao %s,',  # line 117
 'with this automatically created e-mail we want to inform you that|notification'=>'questo è un messaggio automatizzato per informarti che',  # line 119
 'since %s'                    =>'dal %s',  # line 123
-'following happened at %s |notification'=>'è successo quanto di seguito su %s',  # line 126
+'the following happened at %s |notification'=>'è successo quanto di seguito su %s',  # line 126
 'Your account has been created.|notification'=>'Il tuo account è stato creato.',  # line 133
 'Please set password to activate it.|notification'=>'Per favore imposta una password per attivarlo.',  # line 135
 'You have been assigned to projects:|notification'=>'Sei stato assegnato ai progetti:',  # line 144

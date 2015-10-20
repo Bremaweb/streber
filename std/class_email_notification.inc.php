@@ -21,11 +21,11 @@ class EmailNotification extends Email
     protected   $projects;
     protected   $projects_new;
 
-    
+
     protected function initSubject() {
         $this->subject = confGet('NOTIFICATION_EMAIL_SUBJECT')
                        ? confGet('NOTIFICATION_EMAIL_SUBJECT')
-                       : sprintf(__('Updates at %s','notification mail subject'), confGet('SELF_DOMAIN'));
+                       : sprintf(__('Updates at %s','notification mail subject'), confGet('APP_NAME'));
     }
 
 
@@ -38,21 +38,14 @@ class EmailNotification extends Email
 
         $this->initRecipientProjects();
         $this->addRecententAssignedProjects();
-        
+
         $this->addChangesToBookmarkedItems();
         $this->addUntouchedMonitoredItems();
-        $this->addRecentChanges();            
+        $this->addRecentChanges();
         $this->addFooter();
-
-        if($smtp= confGet('SMTP')) {
-            ini_set('SMTP', $smtp);
-        }
-        else {
-            new FeedbackMessage(sprintf(__('No news for <b>%s</b>'), $this->recipient->name));
-        }
         #$this->resetCurrentUser();
     }
-    
+
 
     private function addIntroductionText()
     {
@@ -65,9 +58,28 @@ class EmailNotification extends Email
                      . "</head>"
                      . "<body text=\"#000000\" link=\"#163075\" alink=\"#ff0000\" vlink=\"#2046AA\">"
 
-                     . "<h2>". sprintf(__('Hello %s,','notification'), asHtml($this->recipient->name)) . "</h2>";
+                     . "<h2>". sprintf(__('Hello %s,','notification'), asHtml($this->recipient->name)) . "</h2>"
+                     . __('With this automatically created e-mail we want to inform you that', 'notification') . " ";
 
-        $this->body_plaintext.= sprintf(__('Hello %s,','notification'), $this->recipient->name) . LINE_BREAK;
+        if($this->recipient->notification_last) {
+            $this->body_html.= sprintf(__('since %s'), renderDate($this->recipient->notification_last, false) ). " ";
+        }
+
+        $this->body_html.= sprintf(__('the following happened at %s ','notification'), confGet('APP_NAME')) . ".<br />";
+    }
+
+
+    private function addInvitationForNewAccounts()
+    {
+        ### new account ###
+        if($this->recipient->settings & USER_SETTING_SEND_ACTIVATION) {
+            $this->body_html.= __('Your account has been created.','notification')
+                    . "<a href='$this->url?go=activateAccount&tuid={$this->recipient->identifier}'>"
+                    . __('Please set a password to activate it.','notification')
+                    . "</a><br>";
+
+            $this->information_count++;
+        }
     }
 
 
@@ -76,7 +88,7 @@ class EmailNotification extends Email
         ### recently assigned to projects ###
         $this->projects     = array(); # keep for later reference
         $this->projects_new = array();
-        
+
         foreach($this->recipient->getProjectPeople() as $pp) {
             if($project= Project::getVisibleById($pp->project)) {
                 if($project->state) {
@@ -88,10 +100,10 @@ class EmailNotification extends Email
             }
         }
     }
-    
+
 
     private function addRecententAssignedProjects()
-    {            
+    {
         if($this->projects_new) {
             $this->information_count++;
 
@@ -99,20 +111,12 @@ class EmailNotification extends Email
                             . __('You have been assigned to projects:','notification')
                             . "</h3>"
                             . "<ul>";
-                            
-            $this->body_plaintext.= "\n\r"
-                                 . __('You have been assigned to projects:','notification') . "\n\r"
-                                 . str_repeat("=", strlen(__('You have been assigned to projects:','notification'))) . "\n\r"
-                                 ;
 
             foreach($this->projects_new as $p) {
                 $this->body_html     .= "<li>" . $this->getItemLink($p->id, $p->name) . "</li>";
-                $this->body_plaintext.= "- ". $p->name. "\n\r";
             }
-
             $this->body_html.= "</ul>\n\r";
-            $this->body_plaintext.= "\n\r";
-        }        
+        }
     }
 
 
@@ -123,16 +127,16 @@ class EmailNotification extends Email
         $changes_headline_txt = '';
         $changes_body_html = '';
         $changes_body_plaintext = '';
-        
+
         $monitored_items = ItemPerson::getAll(array(
                            'is_bookmark'=>1,
                            'notify_on_change'=>1,
                            'person'=>$this->recipient->id));
-                           
+
         if(!$monitored_items) {
             return;
         }
-                           
+
         foreach($monitored_items as $mi){
             if($pi = DbProjectItem::getById($mi->item)){
                 if(strToGMTime($pi->modified) > strToGMTime($this->recipient->notification_last)){
@@ -140,7 +144,6 @@ class EmailNotification extends Email
                         $p = Person::GetVisibleById($pi->modified_by);
                         $object = DbProjectItem::getObjectById($pi->id);
                         $changes_body_html .= '<li>' . sprintf(__("%s edited > %s"), $p->nickname, $object->name) . '</li>';
-                        $changes_body_plaintext .= '- ' . sprintf(__("%s edited > %s"), $p->nickname, $object->name) . '\n\r';
                     }
                 }
             }
@@ -148,34 +151,30 @@ class EmailNotification extends Email
 
         if($changes_body_html){
             $this->information_count++;
-            
+
             $this->body_html .= "<h3>" . __('Changed monitored items:','notification') . "</h3>"
                              . "<ul>"
                              . $changes_body_html
                              . "</ul>";
-            
-            $this->body_plaintext .= "\n\r". __('Changed monitored items:','notification') . "\n\r"
-                                 . str_repeat("=", strlen(__('Changed monitored items:','notification'))) . "\n\r"
-                                  . $changes_body_plaintext;
         }
     }
-    
+
     private function addUntouchedMonitoredItems()
-    {        
+    {
         $unchanged_headline_html = '';
         $unchanged_headline_txt = '';
         $unchanged_body_html = '';
         $unchanged_body_plaintext = '';
-        
+
         $monitored_items_unchanged = ItemPerson::getAll(array(
                                    'is_bookmark'=>1,
                                    'notify_if_unchanged_min'=>NOTIFY_1DAY,
                                    'person'=>$this->recipient->id));
-                           
+
         if(!$monitored_items_unchanged) {
             return;
         }
-        
+
         foreach($monitored_items_unchanged as $miu){
             ## reminder period ##
             $period = '';
@@ -211,9 +210,9 @@ class EmailNotification extends Email
                     $period = 2*4*7*24*60*60;
                     break;
             }
-            
+
             $date = $miu->notify_date;
-            
+
             if($pi = DbProjectItem::getVisibleById($miu->item)){
                 $mod_date = $pi->modified;
                 if($date != '0000-00-00 00:00:00'){
@@ -227,28 +226,24 @@ class EmailNotification extends Email
                             $information_count++;
                             $days = round((time() - strToGMTime($miu->notify_date)) / 60 / 60 / 24);
                             $object = DbProjectItem::getObjectById($pi->id);
-                            
+
                             $unchanged_body_html .= '<li>' . sprintf(__("%s (not touched since %s day(s))"), asHtml($object->name), $days) . '</li>';
-                            $unchanged_body_plaintext .= '- ' . sprintf(__("%s (not touched since %s day(s))"), $object->name, $days) . '\n\r';
                         }
                     }
                 }
             }
         }
-        
+
         if($unchanged_body_html) {
             $this->information_count++;
-            $this->body_html.= "<h3>" . __('Unchanged monitored items:','notification'). "</h3>" 
+            $this->body_html.= "<h3>" . __('Unchanged monitored items:','notification'). "</h3>"
                             . "<ul>"
                             . $unchanged_body_html
                             . "</ul>";
-                            
-            $this->body_plaintext .= "\n\r". __('Unchanged monitored items:','notification')."\n\r"
-                                    . $unchanged_body_plaintext;
         }
     }
-    
-    
+
+
     private function addRecentChanges()
     {
         ### list project changes ###
@@ -264,59 +259,48 @@ class EmailNotification extends Email
                 $updates_html.= $this->getItemLink($p->id, $p->name);
 
                 $updates_html.= "</h4><ul>";
-                $updates_txt.= "\n\r". $p->name."\n\r";
 
                 foreach($changes as $c) {
                     $updates_html.="<li>";
-                    $updates_txt.="\n\r- ";
+
 
                     ### task
                     if($c->item && $c->item->type == ITEM_TASK) {
                         $task= $c->item;
                         $updates_html  .= $this->getItemLink( $task->id, $task->name );
-                        $updates_txt   .= $task->name;
+
                     }
                     else if ($c->item && $c->item->type == ITEM_FILE) {
                         $file= $c->item;
                         $updates_html .= $this->getItemLink($file->id, $file->name);
-                        $updates_txt  .= $file->name;                        
+
                     }
 
                     $updates_html.= '<br><span class="details">';       # invisible user
                     $updates_txt.= "\n\r";      # invisible user
-                    
+
                     ### what...
                     if($c->html_what) {
                         $updates_html.= $c->html_what. ' ';
-                        if($c->txt_what) {
-                            $updates_txt.= '  ' . $c->txt_what;
-                        }
-                        else {
-                            $updates_txt.= '  ' . strip_tags($c->html_what);
-                        }
                     }
 
                     $updates_html.= ' ' . __("by") . ' ';       # invisible user
-                    $updates_txt .= ' ' . __("by") . ' ';       # invisible user
 
                     ### who...
                     if($c->person_by) {
                         if($p_who= Person::getVisibleById($c->person_by)) {
                             $updates_html.= "<b>". asHtml($p_who->nickname) ."</b>"
                                   ." ";
-                            $updates_txt.= $p_who->nickname;
 
                         }
                         else {
                             $updates_html.= '??? ';     # invisible user
-                            $updates_txt .= '???: ';        # invisible user
                         }
                     }
 
                     ### when...
                     if($c->timestamp) {
                         $updates_html.=  ' - ' . renderTimestamp($c->timestamp);
-                        $updates_txt .=  ' - ' . renderTimestamp($c->timestamp);
                     }
 
                     ### to...
@@ -329,22 +313,15 @@ class EmailNotification extends Email
                     $updates_html.="</span>";
                     $updates_html.="<div class='details'>" . $c->html_details . "</div>";
                     $updates_html.="</li>";
-                    $updates_txt.="\n\r";
                 }
                 $updates_html.="</ul>";
-                $updates_txt.="\n\r";
             }
         }
         if($updates_html) {
             $this->body_html.="<h3>". __('Project Updates'). "</h3>"
                             . $updates_html;
-            $this->body_plaintext.="\n\r"
-                                 .  __('Project Updates'). "\n\r"
-                                 . str_repeat("=", strlen(__('Project Updates'))) . "\n\r"
-                    . $updates_txt;
-
         }
-        
+
     }
 
 
@@ -356,24 +333,12 @@ class EmailNotification extends Email
               . "<a href='$this->url?go=loginForgotPasswordSubmit&amp;login_name={$this->recipient->nickname}'>"
               . __('Request a mail to change your account settings.','notification')
               . "</a></span>"
-              . "."
-              . "<br>"
-              . "<br>"
-              . __('Thanks for your time','notification') . "<br>"
-              . __('the management', 'notification')
               . "</body>\n\r"
               . "</html>";
 
-        $this->body_plaintext.= 
-               __('Forgot your password or how to log in?','notification') . ' '
-              . __("Click here:") . ' ' . "$this->url?go=loginForgotPasswordSubmit&amp;login_name={$this->recipient->nickname}"
-              . "\n\r"
-              . "\n\r"
-              .'  ' . __('Thanks for your time','notification') . "\n\r"
-              .'  ' . __('the management', 'notification');
 
         }
     }
-    
-    
+
+
 ?>
