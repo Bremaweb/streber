@@ -172,15 +172,15 @@ function listFunctions()
                     if(arr) {
                         id=1*arr[1];
     
-                        $.post('index.php?go=taskAjax',{
-                            go: 'taskAjax',
+                        $.post('index.php',{
+                            go: 'taskRenderDetailsViewResponse',
                             tsk: id
                         }, function(str) {
                             $('#sideboard').html(str);
                             $('#sideboard').addClass('sideboardOn');                        
                             $('#outer').addClass('sideboardOn');
                             $('#sideboard div.wiki.editable').each(function() {
-                                aj= new AjaxEdit(this);
+                                aj= new AjaxWikiEdit(this);
                                 ajax_edits.push(aj);
                                 this.ajax_edit= aj;
                             });

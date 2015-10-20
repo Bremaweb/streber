@@ -45,6 +45,7 @@ class Email
         $this->from_domain = confGet('SELF_DOMAIN');;
         $this->from = array($from_name, $from);
         $this->reply = $from;
+
         $this->to = $person->getValidEmailAddress();
         if(!$this->to) {
             $this->errors[]= _('no person does not have an Email-address','notification');
@@ -160,4 +161,17 @@ class Email
             return $url . "?go=itemView&id=" . intval($id);
         }
     }
+
+    protected function recipientNeedsActivation()
+    {
+        return $this->recipient->settings & USER_SETTING_SEND_ACTIVATION;
+    }
+
+    protected function buildActivationUrl()
+    {
+        return $this->url . "?go=activateAccount&tuid=". $this->recipient->identifier;
+    }
+
+
+
 }

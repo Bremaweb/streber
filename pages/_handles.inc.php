@@ -85,6 +85,16 @@ new PageHandleSubm(array('id'=>'newEffortFromTimeTracking',
 ));
 
 
+new PageHandle(array('id'=>'ajaxSearch',
+    'req'=>'pages/ajax_search.inc.php',
+    'title'=>__(''),
+    'test'=>'yes',
+    
+    'valid_for_crawlers'=>false,
+));
+
+
+
 new PageHandle(array('id'=>'homeAllChanges',
     'req'=>'pages/home.inc.php',
     'title'=>__('Overall changes'),
@@ -186,6 +196,16 @@ new PageHandle(array('id'=>'itemViewDiff',
     'test'=>'yes',
     'test_params'=>array('item'=>'_taskView_',),
     'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'topicExportAsHtml',
+    'req'=>'pages/topic_export_as_html.inc.php',
+    'title'=>__('Export as Html'),
+    'valid_params'=>array(
+           'from'=>'.*',
+           'tsk'=>'\*',
+    ),
+    'test'=>'no',
 ));
 
 
@@ -349,8 +369,9 @@ new PageHandle(array('id'=>'projViewChanges',
     'test_params'=>array('prj'=>'_projectView_',),
     'valid_for_crawlers'=>false,
 ));
+
 new PageHandle(array('id'=>'projViewTasks',
-    'req'=>'pages/project_view_tasks.inc.php',
+    'req'=>'pages/project_view_tasks_in_groups.inc.php',
     'title'=>__('Tasks'),
     'valid_params'=>array(  'from'=>'.*',
                             'prj'=>'\d*',
@@ -360,6 +381,10 @@ new PageHandle(array('id'=>'projViewTasks',
                             ),
     'test'=>'yes',
     'test_params'=>array('prj'=>'_projectView_',),
+
+    #'cleanurl'=>'projViewTasks/_PROJECT_/_TASK_',
+    #'cleanurl_mapping'=>array('prj' => '_PROJECT_', 'task' => '_TASK_'),
+
 ));
 new PageHandleFunc(array('id'=>'projNew',
     'req'=>'pages/project_more.inc.php',
@@ -754,28 +779,6 @@ new PageHandleForm(array('id'=>'taskEditDescription',
 new PageHandleSubm(array('id'=>'taskEditDescriptionSubmit',
     'req'=>'pages/task_more.inc.php',
 
-));
-
-new PageHandleForm(array('id'=>'taskNoteOnPersonNew',
-    'req'=>'pages/task_more.inc.php',
-    'title'=>__('Create Note'),
-    'test'=>'yes',
-    'test_params'=>array('tsk'=>'_taskNoteOnPersonNew_',),
-));
-
-new PageHandleForm(array('id'=>'taskNoteOnPersonEdit',
-    'req'=>'pages/task_more.inc.php',
-    'title'=>__('Edit Note'),
-    'test'=>'yes',
-    'test_params'=>array('tsk'=>'_taskNoteOnPersonEdit_',),
-));
-
-new PageHandleSubm(array('id'=>'taskNoteOnPersonEditSubmit',
-    'req'=>'pages/task_more.inc.php',
-    'title'=>__('Edit Note'),
-
-    'test'=>'yes',
-    'test_params'=>array('tsk'=>'_taskNoteOnPersonEdit_',),
 ));
 
 /**
@@ -1467,12 +1470,47 @@ new PageHandle(array('id'=>'search',
 /**
 * misc pages / ajax etc.
 */
-new PageHandle(array('id'=>'taskAjax',
+new PageHandle(array('id'=>'taskRenderDetailsViewResponse',
     'req'=>'pages/task_ajax.inc.php',
-    'title'=>__('Task Test'),
+    'title'=>__(''),
     'valid_for_crawlers'=>false,
 ));
 
+new PageHandle(array('id'=>'taskBuildListEntryResponse',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'taskSetOrderId',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'taskAjaxCreateNewTask',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'taskAddComment',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'taskSetProperty',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
+
+new PageHandle(array('id'=>'taskAssignToPerson',
+    'req'=>'pages/task_ajax.inc.php',
+    'title'=>__(''),
+    'valid_for_crawlers'=>false,
+));
 
 new PageHandle(array('id'=>'itemLoadField',
     'req'=>'pages/item_ajax.inc.php',

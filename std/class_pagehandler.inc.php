@@ -740,7 +740,7 @@ class PageHandler extends BaseObject
             }
         }
 
-        #--- set params ---
+        #--- set params ---        
         if($params) {
 #            global $vars;
 #            foreach($params as $key=>$value) {
@@ -749,6 +749,7 @@ class PageHandler extends BaseObject
 #            $vars['go']=$id;
             $params['go'] = $id;
             addRequestVars($params);
+
         }
 
         #--- avoid endless traps ---
@@ -870,7 +871,7 @@ class PageHandler extends BaseObject
 
 
     }
-
+    
     /**
     * return requested pagehandle or loginForm if not valid
     *
@@ -878,7 +879,7 @@ class PageHandler extends BaseObject
     */
 
     public function getRequestedPage() 
-    {
+    {  
 
         if(isset($this->hash[get('go')])) {
             return $this->hash[get('go')];

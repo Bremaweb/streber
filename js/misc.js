@@ -181,10 +181,25 @@ function misc()
     * init ajaxEdits
     */
     $('div.wiki.editable').each(function() {
-        aj= new AjaxEdit(this);
+        aj= new AjaxWikiEdit(this);
         ajax_edits.push(aj);
         this.ajax_edit= aj;
     });    
+
+    initAutocompleteSearch();
+
+    /**
+    * focus the search field on first tab
+    */
+    $("body").keydown(function (e) {
+        if (e.which == 9) {
+            var $focused = $(':focus');
+            if($focused.length == 0) {
+                $("input.searchfield").focus();
+                e.preventDefault();
+            }
+        }
+    });
 }
 
 /**
@@ -222,7 +237,7 @@ function getMoreChanges(project, start, count)
 * 
 * read more documentation at http://www.streber-pm.org/3695
 */
-function AjaxEdit(dom_element, item_id, field)
+function AjaxWikiEdit(dom_element, item_id, field)
 {
     this.dom_element    = dom_element;
     this.item_id        = item_id || 0;
@@ -285,6 +300,145 @@ function AjaxEdit(dom_element, item_id, field)
     }
     this.initEditChapters();
 }
+
+function AjaxTextFieldEdit(dom_element, item_id, field_name)
+{
+    var _self =this;
+    this.dom_element    = dom_element;
+    this.item_id        = item_id || 0;
+    this.field_name     = field_name || 0;
+
+    if(!dom_element)
+        return;
+
+    if($(dom_element).attr('item_id')) {
+        this.item_id= $(dom_element).attr('item_id');
+    }
+    else {
+        alert("Warning: no item id for ajax editing!");
+        return;
+    }
+
+    if(this.dom_element.attributes['field_name']) {
+        this.field_name= this.dom_element.attributes['field_name'].value;
+    }
+    else {
+        console.log("Error: Can't get field_name for ajax editing", this);
+        return;
+    }
+
+    this.init = function()
+    {
+        if(!this.dom_element) {
+            alert("no dom element");
+            return;
+        }
+
+        $(this.dom_element).addClass('edit_chapter');
+        $(this.dom_element).attr('title', 'Doubleclick to edit');        
+        
+
+        $(this.dom_element).editable('index.php?go=itemSaveField&item=' + this.item_id + '&field=' + this.field_name + "&plain=42", {
+            loadurl:'index.php?go=itemLoadField&item=' + this.item_id + '&field=' + this.field_name + "&plain=true" ,
+            type:'text',
+            submit:'Save',
+            cancel:'Cancel',
+            obj:dom_element,
+            placeholder:'',
+            chapter:null,
+            autoheight:true,
+            onblur:'ignore',
+            event:'click',
+
+            
+            callback:function(value, settings){
+                
+                $(this).html( value );
+
+                //--- update linked itemfields
+                $('.itemfield').each(function(e) {
+
+                    if($(this).attr('item_id')== _self.item_id && $(this).attr('field_name') == _self.field_name) {
+                        $(this).html(value);
+                    }
+                });                         
+            }
+        });
+        
+    }
+    this.init();
+}
+
+function initAutocompleteSearch()
+{    
+    var self= this;
+    self.searchInput = $('span#tab_search input.searchfield');
+    self.searchQuery = "";
+
+    self.lastRequestQuery = null;
+    
+    self.ac= new $.Ninja.Autocomplete(self.searchInput, {
+        get:function (q, callback) {
+            self.searchQuery = q;
+            if(q == self.lastRequestQuery) 
+                return;
+
+            self.lastRequestQuery = q;
+
+            $.ajax({
+                url: 'index.php',
+                dataType: 'json',
+                data: {
+                    go: 'ajaxSearch',
+                    q: q
+                },
+                success: function (data) {
+                    var queryFromUrl=this.url.match(/q=(.*)/)[1];
+                    var queryWithCorrectSpaces = queryFromUrl.replace("+", " ");
+                    if(queryWithCorrectSpaces != self.lastRequestQuery) {
+                        console.log("skipping obsolete request", queryWithCorrectSpaces , self.lastRequestQuery);
+                        return;
+                    }
+
+                    var rich_value_map = {};
+
+                    if(data != null) {
+                        values= $.map(data, function (item) {
+
+                          rich_value_map[item.name.replace("\n","")]= item.id;
+                          return item.name;
+                        });                        
+                    }
+                    self.searchInput.data('rich-values', rich_value_map);
+                    callback(values);
+                },
+
+            error: function (request, status, message) {
+              $.ninja.error(message);
+            }
+          });
+        },
+        select:function() {
+            var value = self.searchInput.data('rich-values')[ $(self.searchInput).val() ];
+            if( value > 0) {
+                $('form#my_form').submit(function (e) {
+                    e.preventDefault();                    
+                });                
+                window.location= "" + value ;
+                e.preventDefault;
+                return false;
+            }
+            else if (value == -1) {
+                $(self.searchInput).val(self.searchQuery);
+                $('form#my_form').submit();
+            }
+            else {
+                $(self.searchInput).val(self.searchQuery);
+            }
+        }
+    });
+}
+
 
 /**
 * initialize handlers for autocompletion input fields on startup

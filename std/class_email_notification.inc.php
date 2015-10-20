@@ -10,8 +10,7 @@
  * @author         Thomas Mann
  * @uses:           ListChanges
  * @usedby:
-
-*/
+**/
 
 require_once(confGet('DIR_STREBER') . './std/class_email.inc.php');
 
@@ -24,7 +23,9 @@ class EmailNotification extends Email
 
 
     protected function initSubject() {
-        $this->subject = sprintf(__('Updates at %s','notification mail subject'), confGet('APP_NAME'));
+        $this->subject = confGet('NOTIFICATION_EMAIL_SUBJECT')
+                       ? confGet('NOTIFICATION_EMAIL_SUBJECT')
+                       : sprintf(__('Updates at %s','notification mail subject'), confGet('APP_NAME'));
     }
 
 
@@ -34,14 +35,13 @@ class EmailNotification extends Email
 
         $this->addIntroductionText();
 
-        $this->addInvitationForNewAccounts();
+
         $this->initRecipientProjects();
         $this->addRecententAssignedProjects();
 
         $this->addChangesToBookmarkedItems();
         $this->addUntouchedMonitoredItems();
         $this->addRecentChanges();
-
         $this->addFooter();
         #$this->resetCurrentUser();
     }
@@ -57,6 +57,7 @@ class EmailNotification extends Email
                      . "<style> div.details{color:#888888; font-size: 80%;} h4 {font-size:110%;} li{ margin-bottom:0.2em; } ul {margin:0; padding:0px 0px 0px 1em;} li span.details { font-size: 80%; color: #888} </style>"
                      . "</head>"
                      . "<body text=\"#000000\" link=\"#163075\" alink=\"#ff0000\" vlink=\"#2046AA\">"
+
                      . "<h2>". sprintf(__('Hello %s,','notification'), asHtml($this->recipient->name)) . "</h2>"
                      . __('With this automatically created e-mail we want to inform you that', 'notification') . " ";
 

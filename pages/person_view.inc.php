@@ -68,19 +68,6 @@ function personView()
 
             ### page functions ###
             $page->add_function(new PageFunction(array(
-                'target'=>'taskNoteOnPersonNew',
-                'params'=>array('person'=>$person->id),
-                'tooltip'=>__('Add task for this people (optionally creating project and effort on the fly)','Tooltip for page function'),
-                'name'=>__('Add note','Page function person'),
-            )));
-            #$page->add_function(new PageFunction(array(
-            #'target'    =>'personLinkCompanies',
-            #'params'    =>array('person'=>$person->id),
-            #'tooltip'   =>__('Add existing companies to this person'),
-            #'name'      =>__('Companies'),
-            #)));
-
-            $page->add_function(new PageFunction(array(
                 'target'=>'personEdit',
                 'params'=>array('person'=>$person->id),
                 'icon'=>'edit',
@@ -142,10 +129,14 @@ function personView()
     }
     echo (new PageContentOpen_Columns);
 
-    ### write info block (but only for registed users)
-    global $auth;
-    if($auth->cur_user->id != confGet('ANONYMOUS_USER')) {
+    # some personal details (only if allowed)
+    if(!$auth->hideOtherPeoplesDetails()) 
+    {
+
+        ### write info block
+
         $block=new PageBlock(array('title'=>__('Summary','Block title'),'id'=>'summary'));
+
         $block->render_blockStart();
         echo "<div class=text>";
 
@@ -204,11 +195,9 @@ function personView()
         ### functions ####
         echo "</div>";
         $block->render_blockEnd();
-    }
 
+        #--- list companies -----------------------------------
 
-    #--- list companies -----------------------------------
-    {
         require_once(confGet('DIR_STREBER') . 'lists/list_companies.inc.php');
         $companies = $person->getCompanies();
         $list = new ListBlock_companies();

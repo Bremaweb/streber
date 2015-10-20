@@ -16,9 +16,8 @@ require_once("defines.inc.php");
 global $g_config;
 $g_config= array(
 
-    'STREBER_VERSION'       => '0.095',
-    'STREBER_VERSION_DATE'  => '2015-14-05',
-
+    'STREBER_VERSION'       => '0.0971',
+    'STREBER_VERSION_DATE'  => '2015-10-20',
     'APP_NAME'              => 'streber',
     'APP_PAGE_URL'          => 'http://www.streber-pm.org',
     'PHP_VERSION_REQUIRED'  =>  '5.0.0',
@@ -218,6 +217,19 @@ $g_config= array(
                     Use your chance now and <br>send a mail to <a href='%s'>%s</a> to get your special reward immediately.<br><br>
                     Problem: <b>",
 
+    /**
+    * You can override the activation message a new user receives after her
+    * account has been created.
+    *
+    * IMPORTANT: both message must include precisely one %s, which will be replaced
+    * with the url of the activation link.
+    */
+    'ACTIVATION_MAIL_PLAIN_BODY' => '',
+    'ACTIVATION_MAIL_HTML_BODY' => '',
+
+    'WELCOME_EMAIL_SUBJECT'=>'',
+    'NOTIFICATION_EMAIL_SUBJECT'=>'',
+    'NOTIFICATION_EMAIL_SENDER'=>'',
 
 
     'EMAIL_ADMINISTRATOR'=>'',
@@ -375,6 +387,12 @@ $g_config= array(
     * editing.
     */
     'TASKDETAILS_IN_SIDEBOARD' => false,
+
+    /**
+    * Restrict display for normal users (e.g. to hide personal details of people)
+    * This does not affect the display for admins and PMs.
+    */
+    'HIDE_OTHER_PEOPLES_DETAILS' => false,
 
     /**
     * details on how the project changes are displayed in the dashboard

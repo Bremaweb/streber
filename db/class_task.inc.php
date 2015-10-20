@@ -363,6 +363,7 @@ foreach($filters_str as $fs=>$value) {
             'show_folders'=>true,
             'status_min'=> STATUS_UPCOMING,
             'status_max'=> STATUS_CLOSED,
+            'order_by' => 'order_id',
         )) as $t) {
             $tasks[]= $t;
             if($t->category == TCATEGORY_FOLDER) {
@@ -601,7 +602,7 @@ foreach($filters_str as $fs=>$value) {
                 AND upp.state = 1
 
                 AND i.type = '".ITEM_EFFORT."'
-                AND i.state=1
+                AND i.state =1
                 AND i.project = $this->project
                 AND ( i.pub_level >= upp.level_view
                       OR
@@ -609,6 +610,7 @@ foreach($filters_str as $fs=>$value) {
                 )
 
                 AND e.id = i.id
+                AND e.status <= " . EFFORT_STATUS_OPEN . "
                 AND e.task=$this->id    /* only  task-efforts*/
             ";
 
@@ -1376,10 +1378,8 @@ foreach($filters_str as $fs=>$value) {
 	
 
     public function getLink($short_name= true, $strikeDone= true)
-    {
-        $style_isdone=   ($this->isOfCategory(array(TCATEGORY_TASK, TCATEGORY_BUG))) && ($strikeDone && $this->status >= STATUS_COMPLETED)
-                    ? 'isDone'
-                    : '';
+    {        
+        $style_isdone=   ($strikeDone && $this->isDone()) ? 'isDone' : '';
 
         global $PH;
         if($short_name) {
@@ -1390,6 +1390,47 @@ foreach($filters_str as $fs=>$value) {
         }
     }
 
+    public function isDone()
+    {
+        return ($this->isOfCategory(array(TCATEGORY_TASK, TCATEGORY_BUG))) && $this->status >= STATUS_COMPLETED;
+    }
+
+    public function getUrl()
+    {
+        global $PH;
+        return $PH->getUrl('taskView', array('tsk'=>$this->id));        
+    }
+
+    /**
+    * render html buffer with page type of this task, including parent folders
+    * and type and status.
+    *
+    * - This is the tiny text about the page title.
+    */
+    public function buildTypeText()
+    {
+        global $g_status_names;
+        global $g_prio_names;
+        $type ="";
+
+        $prio = $this->prio != PRIO_NORMAL && isset($g_prio_names[$this->prio])
+            ? $g_prio_names[$this->prio] .' '
+            : '';
+
+        $status=  $this->status != STATUS_OPEN && $this->status != STATUS_NEW  && isset($g_status_names[$this->status])
+               ?  ' ('.$g_status_names[$this->status] .')'
+               :  '';
+
+        $label=  $this->getLabel();
+
+        if($folder= $this->getFolderLinks()) {
+            $type = $folder ." &gt; " . $prio . $label . '  '. $status ;
+        }
+        else {
+            $type =  $prio .$label .' ' . $status;
+        }
+        return $type;
+    }
 
     public function getLabel()
     {
@@ -1421,6 +1462,21 @@ foreach($filters_str as $fs=>$value) {
         else {
             return __('Task');
         }
+    }
+
+
+    public function getLabelOptions()
+    {
+        if(!$project= Project::getById($this->project)) {
+            trigger_error("task without project?", E_USER_WARNING);
+        }
+        $labels=preg_split("/,/",$project->labels);
+        $options = array(0=>__("undefined"));        
+        for ($i=0; $i < count($labels); $i++) { 
+            $options[$i+1] = $labels[$i];
+        }
+
+        return $options;
     }
 
 
@@ -1493,10 +1549,8 @@ foreach($filters_str as $fs=>$value) {
     public function isBug() {
         return isOfCategory(TCATEGORY_BUG);
     }
-
 }
 
 Task::init();
-
 
 ?>

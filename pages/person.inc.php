@@ -32,7 +32,11 @@ function personList()
     global $PH;
     global $auth;
 
-    if(!($auth->cur_user->user_rights & RIGHT_PERSON_EDIT) && confGet('ANONYMOUS_USER') != false) {
+
+    $has_edit_rights = $auth->cur_user->user_rights & RIGHT_PERSON_EDIT;
+    $anonymous_users_enabled = confGet('ANONYMOUS_USER') != false;
+
+    if((!$has_edit_rights && !$anonymous_users_enabled) || $auth->hideOtherPeoplesDetails() ) {
         ### set up page and write header ####
 
         $page= new Page();
@@ -45,16 +49,13 @@ function personList()
         echo (new PageContentOpen);
 
         echo "<div class=license>";
-        echo wiki2purehtml("
-You have insufficent user rights to see complete list.
-");
+        echo wiki2purehtml(__("Sorry, but this information is available."));
         echo "</div>";
 
         echo (new PageContentClose);
         echo (new PageHtmlEnd);        
         exit();        
     }
-
     
     $presets= array(
         ### all ###
@@ -232,54 +233,54 @@ You have insufficent user rights to see complete list.
     
     echo (new PageContentOpen);
     
+    
     #--- list people --------------------------------------------------------
-    {
-        if($order_by=get('sort_'.$PH->cur_page->id."_people_list")) {
-            $order_by= str_replace(",",", ", $order_by);
-        }
-        else {
-            $order_by='name';
+    if($order_by=get('sort_'.$PH->cur_page->id."_people_list")) {
+        $order_by= str_replace(",",", ", $order_by);
+    }
+    else {
+        $order_by='name';
+    }
+
+    $list= new ListBlock_people();
+    $list->title= $page->title;
+    unset($list->columns['profile']);
+    unset($list->columns['projects']);
+    unset($list->columns['changes']);
+    
+    $list->filters[] = new ListFilter_people();
+    {            
+        $preset = $presets[$preset_id];
+        foreach($preset['filters'] as $f_name=>$f_settings) {
+            switch($f_name) {
+                case 'person_category':
+                    $list->filters[]= new ListFilter_person_category_min(array(
+                        'value'=>$f_settings['min'],
+                    ));
+                    $list->filters[]= new ListFilter_person_category_max(array(
+                        'value'=>$f_settings['max'],
+                    ));
+                    break;
+                case 'can_login':
+                    $list->filters[]= new ListFilter_can_login(array(
+                        'value'=>$f_settings['value'],
+                    ));
+                    break;
+                case 'person_is_alive':
+                    $list->filters[]= new ListFilter_is_alive(array(
+                        'value'=>$f_settings['value'],
+                    ));
+                    break;
+                default:
+                    trigger_error("Unknown filter setting $f_name", E_USER_WARNING);
+                    break;
+            }
         }
 
-        $list= new ListBlock_people();
-        $list->title= $page->title;
-        unset($list->columns['profile']);
-        unset($list->columns['projects']);
-        unset($list->columns['changes']);
+        $filter_empty_folders =  (isset($preset['filter_empty_folders']) && $preset['filter_empty_folders'])
+                              ? true
+                              : NULL;
         
-        $list->filters[] = new ListFilter_people();
-        {            
-            $preset = $presets[$preset_id];
-            foreach($preset['filters'] as $f_name=>$f_settings) {
-                switch($f_name) {
-                    case 'person_category':
-                        $list->filters[]= new ListFilter_person_category_min(array(
-                            'value'=>$f_settings['min'],
-                        ));
-                        $list->filters[]= new ListFilter_person_category_max(array(
-                            'value'=>$f_settings['max'],
-                        ));
-                        break;
-                    case 'can_login':
-                        $list->filters[]= new ListFilter_can_login(array(
-                            'value'=>$f_settings['value'],
-                        ));
-                        break;
-                    case 'person_is_alive':
-                        $list->filters[]= new ListFilter_is_alive(array(
-                            'value'=>$f_settings['value'],
-                        ));
-                        break;
-                    default:
-                        trigger_error("Unknown filter setting $f_name", E_USER_WARNING);
-                        break;
-                }
-            }
-    
-            $filter_empty_folders =  (isset($preset['filter_empty_folders']) && $preset['filter_empty_folders'])
-                                  ? true
-                                  : NULL;
-        }
         
         if($auth->cur_user->user_rights & RIGHT_PERSON_CREATE) {
             $list->no_items_html=$PH->getLink('personNew','');
@@ -2062,8 +2063,24 @@ function personEditSubmit()
     if($person->id == 0) {
 
         if(($person->settings & USER_SETTING_NOTIFICATIONS) && $person->can_login) {
-            $person->settings |= USER_SETTING_SEND_ACTIVATION;
-            new FeedbackHint(sprintf(__("A notification / activation  will be mailed to <b>%s</b> when you log out."), $person->name). " " . sprintf(__("Read more about %s."), $PH->getWikiLink('notifications')));
+            $person->settings |= USER_SETTING_SEND_ACTIVATION;            
+
+            require_once(confGet('DIR_STREBER') . 'std/class_email_welcome.inc.php');
+
+            $email= new EmailWelcome($person);
+            
+            if($email->information_count) {
+                $result= $email->send();
+                if($result === true ) {
+                    ### reset activation-flag ###
+                    $person->settings &= USER_SETTING_SEND_ACTIVATION ^ RIGHT_ALL;
+                    $person->notification_last= gmdate("Y-m-d H:i:s");
+                }
+                else if ($result !== false) {
+                    $num_warnings++;
+                    new FeedbackWarning(sprintf(__('Failure sending mail: %s'), $result));
+                }
+            }
         }
 
         $person->notification_last = getGMTString(time() - $person->notification_period * 60*60*24 - 1);
