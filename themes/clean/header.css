@@ -261,6 +261,9 @@ span.selector:hover {
  background-image: url(layout/marker_context_menu_hover.png);
 }
 
+.projects ul li {
+	overflow: hidden;
+}
 
 span.selectorlist {
  display:           inline;
