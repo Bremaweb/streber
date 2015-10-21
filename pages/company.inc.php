@@ -146,7 +146,7 @@ function companyList() {
             }
         }
     }
-    
+
     ### create from handle ###
     $PH->defineFromHandle(array('preset_id'=>$preset_id));
 
@@ -188,7 +188,7 @@ function companyList() {
     #--- list projects --------------------------------------------------------
     {
         $list= new ListBlock_companies();
-        
+
         $list->filters[] = new ListFilter_companies();
         {
             $preset = $presets[$preset_id];
@@ -207,12 +207,12 @@ function companyList() {
                         break;
                 }
             }
-    
+
             $filter_empty_folders =  (isset($preset['filter_empty_folders']) && $preset['filter_empty_folders'])
                                   ? true
                                   : NULL;
         }
-        
+
         ### may user create companies? ###
         if($auth->cur_user->user_rights & RIGHT_COMPANY_CREATE) {
             $list->no_items_html=$PH->getLink('companyNew','',array('person'=>$auth->cur_user->id));
@@ -224,18 +224,18 @@ function companyList() {
 
         $order_str= get("sort_".$PH->cur_page->id."_".$list->id);
         $order_str= str_replace(",",", ", $order_str);
-        
+
         $list->query_options['order_str'] = $order_str;
-                
+
         $list->title= $page->title;
-        
+
         $page->print_presets(array(
             'target' => $preset_location,
             'project_id' => '',
             'preset_id' => $preset_id,
             'presets' => $presets,
             'person_id' => ''));
-            
+
         $list->print_automatic();
 
         ### Link to start cvs export ###
@@ -252,7 +252,7 @@ function companyList() {
 
 
 /**
-* View a company 
+* View a company
 *
 * @ingroup pages
 */
@@ -306,7 +306,7 @@ function companyView()
             'tooltip'   =>__('Edit this company'),
             'name'      =>__('Company'),
         )));
-        
+
         $item = ItemPerson::getAll(array('person'=>$auth->cur_user->id,'item'=>$company->id));
         if((!$item) || ($item[0]->is_bookmark == 0)){
             $page->add_function(new PageFunction(array(
@@ -323,8 +323,8 @@ function companyView()
                 'tooltip'   =>__('Remove this bookmark'),
                 'name'      =>__('Remove Bookmark'),
             )));
-        } 
-        
+        }
+
         if($company->state == 1) {
             $page->add_function(new PageFunction(array(
                 'target'=>'companyDelete',
@@ -376,7 +376,7 @@ function companyView()
         if($company->comments) {
             echo wikifieldAsHtml($company, 'comments');
         }
-                
+
         if($company->street) {
             echo '<div class=labeled><label>'. __('Adress') . ':</label>' . asHtml($company->street) .'</div>';
         }
@@ -409,8 +409,8 @@ function companyView()
             }
             if( $sum > 0) {
                 echo "<div class=text>";
-                    echo '<div class=labeled><label>'. __('Open efforts') . ':</label>' . round($sum/60/60,1)  .'h</div>';            
-            
+                    echo '<div class=labeled><label>'. __('Open efforts') . ':</label>' . round($sum/60/60,1)  .'h</div>';
+
                 echo "</div>";
             }
         }
@@ -419,7 +419,7 @@ function companyView()
 
         $block->render_blockEnd();
     }
-    
+
 
     #--- list people -------------------------------
     {
@@ -491,7 +491,7 @@ function companyView()
         $list= new ListBlock_projects();
 
         $list->title=__("Active projects");
-                
+
         $list->id="active_projects";
         $list->groupings= NULL;
         $list->block_functions = NULL;
@@ -624,6 +624,8 @@ function companyEdit($company=NULL)
         global $g_ccategory_names;
         require_once(confGet('DIR_STREBER') . 'render/render_form.inc.php');
 
+        $PH->go_submit='companyEditSubmit';
+
         $form=new PageForm();
         $form->button_cancel=true;
 
@@ -637,11 +639,11 @@ function companyEdit($company=NULL)
         }
         else if($company->id) {
             $comcat = $company->category;
-        } 
+        }
         else {
             $comcat = CCATEGORY_CLIENT;
         }
-        
+
         $form->add(new Form_Dropdown('ccategory',  __('Category','form label'),array_flip($g_ccategory_names), $comcat));
 
         ### create another  ###
@@ -653,10 +655,7 @@ function companyEdit($company=NULL)
             $form->form_options[]="<span class=option><input id='create_another' name='create_another' class='checker' type=checkbox $checked><label for='create_another'>" . __("Create another company after submit") . "</label></span>";     ;
         }
 
-
         echo ($form);
-
-        $PH->go_submit='companyEditSubmit';
 
         ### pass person-id? ###
         if($p = get('person')) {
@@ -831,7 +830,7 @@ function companyLinkPeople() {
 /**
 * Submit linked people to a company
 *
-* @ingroup pages 
+* @ingroup pages
 */
 function companyLinkPeopleSubmit()
 {
@@ -883,7 +882,7 @@ function companyLinkPeopleSubmit()
 }
 
 /**
-* Remove people from a company 
+* Remove people from a company
 *
 * @ingroup pages
 */
@@ -951,7 +950,7 @@ function companyPeopleDelete()
 }
 
 /**
-* Delete a company 
+* Delete a company
 *
 * @ingroup pages
 */

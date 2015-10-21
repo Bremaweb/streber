@@ -8,7 +8,7 @@
  * @author Thomas Mann
  *
  */
- 
+
  /**
  * @defgroup render Render
  *
@@ -144,7 +144,7 @@ class NaviCrumb extends NaviLink
 }
 
 /**
-* Handles information about alternative Pages for a displayed Pages 
+* Handles information about alternative Pages for a displayed Pages
 *
 * @ingroup render
 */
@@ -221,7 +221,7 @@ class Page
     #--- constructor ---------------------------
     public function __construct($args=NULL)
     {
-        
+
         ### set global page-var
         global $_PAGE;
         global $auth;
@@ -304,13 +304,13 @@ class Page
     function __set($name, $val)   {
         if (isset($this->$name) || is_null($this->$name)) {
            $this->$name = $val;
-        } 
+        }
         else {
            trigger_error("can't set page->$name", E_USER_WARNING);
         }
     }
-    
-    
+
+
     /**
     * setter members handler
     */
@@ -318,13 +318,13 @@ class Page
     {
         if (isset($this->$name) ) {
             return $this->$name;
-        } 
+        }
         else {
             trigger_error("can't read '$name'", E_USER_WARNING);
         }
     }
-   
-       
+
+
     /**
     * add a page function
     */
@@ -393,16 +393,16 @@ class Page
             return;
         }
         global $PH;
-        
+
         $pvalue = '';
-        
+
         if(isset($args) && count($args) == 5){
             $preset_location = $args['target'];
             $project_id = $args['project_id'];
             $preset_id = $args['preset_id'];
             $presets = $args['presets'];
             $person_id = $args['person_id'];
-            
+
             echo "<div class=\"presets\">";
             #echo __("Filter-Preset:");
             foreach($presets as $p_id=>$p_settings) {
@@ -422,7 +422,7 @@ class Page
 }
 
 /**
-* Element inside a page 
+* Element inside a page
 *
 * @ingroup render
 *
@@ -481,7 +481,7 @@ class PageElement extends BaseObject
 
 
 /**
-* Class for rendering the beginning or an Page in html 
+* Class for rendering the beginning or an Page in html
 *
 * @ingroup render
 */
@@ -516,7 +516,7 @@ class PageHtmlStart extends PageElement {
         if(isset($auth->cur_user->language)) {
             $buffer.='<meta http-equiv="Content-Language" content="'.$auth->cur_user->language.'">';
         }
-        
+
         $buffer.='<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">'
         .'<META HTTP-EQUIV="EXPIRES" CONTENT="-1">'
         .'<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">'
@@ -559,19 +559,19 @@ class PageHtmlStart extends PageElement {
             $buffer.='<script type="text/javascript" src="js/jquery.autocomplete.1.0.2.js' . "?v=" . confGet('STREBER_VERSION') . '"></script>';
             $buffer.='<link rel="stylesheet" type="text/css" href="' . getThemeFile("jquery.autocomplete.css") .'?v=' . confGet('STREBER_VERSION') . '" />';
         }
-        
+
 
         $buffer.='
         <script type="text/javascript">
         ';
-        
+
         if(confGet('TASKDETAILS_IN_SIDEBOARD')) {
-            $buffer.="var g_enable_sideboard= true;";                    
+            $buffer.="var g_enable_sideboard= true;";
         }
         else {
-            $buffer.="var g_enable_sideboard= false;";                    
+            $buffer.="var g_enable_sideboard= false;";
         }
-        
+
         ### assemble onLoad function
         $buffer.='
         <!--
@@ -593,7 +593,7 @@ document.my_form." . $this->page->autofocus_field. ".select();";
         $buffer.='initContextMenus();';
 
         if($q=get('q')) {
-            $q= asCleanString($q);  
+            $q= asCleanString($q);
             if($ar = explode(" ",$q)) {
                 foreach($ar as $q2) {
                     if($q2) {
@@ -723,9 +723,7 @@ class PageHeader extends PageElement
         $logout_url=$PH->getUrl('logout');
         $app_url= confGet('APP_PAGE_URL');
 
-        $submit_url= confGet('USE_MOD_REWRITE')
-                ? 'submit'
-                : 'index.php';
+        $submit_url = 'index.php';
 
         $buffer= '<form id="my_form" name="my_form" action="'. $submit_url .'" method="post" enctype="multipart/form-data" >';
         $buffer.="\n<div id=\"header\">
@@ -890,13 +888,13 @@ class PageHeaderSections extends PageElement {
         * we do not display sections for crawlers, to do not complain
         */
         global $auth;
-        if(!$tab_found && !Auth::isCrawler()) { 
+        if(!$tab_found && !Auth::isCrawler()) {
             trigger_error("Could not find tab '{$this->page->cur_tab}' in list...", E_USER_NOTICE);
         }
 
         return $buffer;
     }
-}  
+}
 
 
 /**
@@ -929,7 +927,7 @@ class PageHeaderNavigation extends PageElement
                 if($last_navigation_option) {
                     $last_navigation_option->parent_of_active= true;
                 }
-                break;                
+                break;
             }
             else if($l->target_id == $PH->cur_page_id) {
                 $l->active = true;
