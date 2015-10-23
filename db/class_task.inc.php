@@ -629,7 +629,7 @@ foreach($filters_str as $fs=>$value) {
         }
         return $sum;
     }
-    
+
     function getSumTaskEfforts()
     {
         global $auth;
@@ -670,7 +670,7 @@ foreach($filters_str as $fs=>$value) {
 
     /**
     * returns assoc. array
-    * 
+    *
     * Note: - "num_open" counts all tasks with status between New and Completed
     *       - to differentiate between open and needs approval subtract num_need_approval
     */
@@ -894,7 +894,7 @@ foreach($filters_str as $fs=>$value) {
         $label          = NULL;
         $person         = 0;
         $is_news        = NULL;
-		
+
         ### filter params ###
         if($args) {
             foreach($args as $key=>$value) {
@@ -906,7 +906,7 @@ foreach($filters_str as $fs=>$value) {
                 }
             }
         }
-        
+
         if($sort_hierarchical && is_null($parent_task)) {
             $parent_task=0;
         }
@@ -928,7 +928,7 @@ foreach($filters_str as $fs=>$value) {
         $str_is_folder= $show_folders
             ? ''
             : 'AND t.is_folder=0';
-		
+
         $str_modified_by= $modified_by
             ? 'AND i.modified_by ='. intval($modified_by)
             : '';
@@ -1033,11 +1033,11 @@ foreach($filters_str as $fs=>$value) {
         $str_match= $search
             ? "AND MATCH (t.name,t.short,t.description) AGAINST ('". asMatchString($search) ."*' IN BOOLEAN MODE)"
         : '';
-		
+
 		$str_person = $person
 		            ? $person
 					: $auth->cur_user->id;
-					
+
         if(is_null($visible_only)) {
 
             $visible_only   = $auth->cur_user && ($auth->cur_user->user_rights & RIGHT_VIEWALL)
@@ -1213,13 +1213,13 @@ foreach($filters_str as $fs=>$value) {
                 " . getOrderByString($order_by);
             }
         }
-        
+
         $dbh = new DB_Mysql;
         $sth= $dbh->prepare($str_query);
 
         $sth->execute("",1);
         $tmp=$sth->fetchall_assoc();
-		
+
         $tasks=array();
         foreach($tmp as $t) {
             $task=new Task($t);
@@ -1375,10 +1375,10 @@ foreach($filters_str as $fs=>$value) {
             return $people;
         }
     }
-	
+
 
     public function getLink($short_name= true, $strikeDone= true)
-    {        
+    {
         $style_isdone=   ($strikeDone && $this->isDone()) ? 'isDone' : '';
 
         global $PH;
@@ -1398,7 +1398,7 @@ foreach($filters_str as $fs=>$value) {
     public function getUrl()
     {
         global $PH;
-        return $PH->getUrl('taskView', array('tsk'=>$this->id));        
+        return $PH->getUrl('taskView', array('tsk'=>$this->id));
     }
 
     /**
@@ -1439,7 +1439,7 @@ foreach($filters_str as $fs=>$value) {
         }
         else if($this->category == TCATEGORY_MILESTONE) {
             return __('Milestone');
-            
+
         }
         else if ($this->category == TCATEGORY_VERSION) {
             return __('Released Milestone');
@@ -1471,15 +1471,18 @@ foreach($filters_str as $fs=>$value) {
             trigger_error("task without project?", E_USER_WARNING);
         }
         $labels=preg_split("/,/",$project->labels);
-        $options = array(0=>__("undefined"));        
-        for ($i=0; $i < count($labels); $i++) { 
+        $options = array(0=>__("undefined"));
+        for ($i=0; $i < count($labels); $i++) {
             $options[$i+1] = $labels[$i];
         }
 
         return $options;
     }
 
+	public function getMilestoneOptions()
+	{
 
+	}
 
     /**
     * gets documentation sub tasks and folders of a task
@@ -1519,13 +1522,13 @@ foreach($filters_str as $fs=>$value) {
         }
         return $tasks;
     }
-    
+
     public function isMilestoneOrVersion()
     {
         return $this->isOfCategory(array(TCATEGORY_MILESTONE, TCATEGORY_VERSION));
     }
 
-    
+
     public function isOfCategory($cat)
     {
         if(is_array($cat)) {
@@ -1539,9 +1542,9 @@ foreach($filters_str as $fs=>$value) {
         elseif($this->category == $cat) {
             return true;
         }
-        return false;        
+        return false;
     }
-    
+
     public function isDocumentation() {
         return isOfCategory(TCATEGORY_DOCU);
     }

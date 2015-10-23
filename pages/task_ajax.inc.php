@@ -84,6 +84,7 @@ function _renderStatusInfo($task)
     echo _renderFieldOption($task, 'prio', isset($changedFields['prio']));
     echo _renderFieldOption($task, 'status', isset($changedFields['status']));
     echo _renderFieldOption($task, 'label', isset($changedFields['label']));
+    echo _renderMilestoneOption($task, 'for_milestone', isset($changedFields['for_milestone']));
     echo _renderAssignTaskOption($task);
     echo "</table></tr>";
     echo "</div>";
@@ -109,6 +110,36 @@ function _renderFieldOption($task, $field_name, $hasChanged)
     echo "</td>";
 }
 
+function _renderMilestoneOption($task, $field_name, $hasChanged)
+{
+	$field = $task->fields[$field_name];
+	$p = $task->getProject();
+	$options = $p->buildPlannedForMilestoneList();
+	$hasChangedClass = $hasChanged ? 'has-changed':'';
+	echo "<td><label class='$hasChangedClass'>". $field->title . "</label>";
+	echo "<select class='inline' data-field-name='$field_name' data-task-id='$task->id' data-url='taskSetProperty' >";
+		foreach($options as $group_title => $group_options) {
+            if ($group_title != NO_OPTION_GROUP) {
+                echo "<optgroup label='". asHtml($group_title). "'>";
+            }
+            foreach($group_options as $option_value => $option_name) {
+                $str_selected= ( $task->for_milestone == $option_value)
+                     ? 'selected=1'
+                     : '';
+
+                echo '<option ' . $str_selected .' label="' . asHtml($option_name) . '" value="' . asHtml($option_value) . '" >' . asHtml($option_name) . '</option>';
+            }
+            if ($group_title != NO_OPTION_GROUP) {
+                echo "</optgroup>";
+            }
+        }
+	echo "</select>";
+
+	echo "</div>";
+	echo "</td>";
+}
+
+
 function _renderAssignTaskOption($task)
 {
     $project = $task->getProject();
@@ -117,7 +148,7 @@ function _renderAssignTaskOption($task)
 
     $currentName = "-";
     $currentValue = 0;
-    foreach($pps as $pp) {        
+    foreach($pps as $pp) {
 
 
         $person = $pp->getPerson();
@@ -147,11 +178,11 @@ function _getTastFieldOptions($task, $field)
         global $g_prio_names;
         return $g_prio_names;
     }
-    else if($field->name == 'status') {        
+    else if($field->name == 'status') {
         global $g_status_names;
         return $g_status_names;
     }
-    else if($field->name == 'label') {                
+    else if($field->name == 'label') {
         return $task->getLabelOptions();
     }
 
@@ -163,7 +194,7 @@ function _getTastFieldOptions($task, $field)
 *        go: 'taskSetProperty',
 *        task_id: -,
 *        field_name: -,
-*        value: 
+*        value:
 *       });
 * returns the new value or an error-message
 */
@@ -174,8 +205,8 @@ function taskSetProperty() {
     if(!$task = Task::getEditableById($task_id)) {
         echo __("Meh, Not allowed!");
         return;
-    }    
-    
+    }
+
     $value = get('value');
     if($value == null || $value == '' ) {
         echo __("Failed: may not be empty");
@@ -186,23 +217,22 @@ function taskSetProperty() {
     $field_name = "".get('field_name');
     if(!$field = $task->fields[$field_name]) {
         echo __("invalid field");
-        return;        
+        return;
     }
-    
-    if($field_name != "view_collapsed") {
+
+    if($field_name != "view_collapsed" && $field_name != "for_milestone") {
         $options = _getTastFieldOptions($task, $field);
-        
+
         if(!$options[$value]) {
             echo __("Failed: invalid option");
             return;
-        }        
+        }
     }
     $task->$field_name= $value;
     $task->update(array($field_name));
     echo $options[$value];
     return true;
 }
-
 
 /**
 *       $.post('index.php',{
@@ -212,7 +242,7 @@ function taskSetProperty() {
 *       });
 * returns the new value or an error-message
 */
-function taskAssignToPerson() 
+function taskAssignToPerson()
 {
     $task_id = intval( get('task_id'));
     if(!$task = Task::getEditableById($task_id)) {
@@ -227,10 +257,10 @@ function taskAssignToPerson()
         echo __("Failed: may not be empty");
         return;
     }
-    $person_id = intval($value); 
+    $person_id = intval($value);
 
     $keepCurrentAssignment = false;
-    foreach( $task->getAssignments() as $assigment) 
+    foreach( $task->getAssignments() as $assigment)
     {
         // keep
         if($assigment->person == $person_id) {
@@ -243,7 +273,7 @@ function taskAssignToPerson()
     }
 
     if(!$keepCurrentAssignment && $person_id != 0) {
-        if( $project->isPersonVisibleTeamMember($person_id)) 
+        if( $project->isPersonVisibleTeamMember($person_id))
         {
             $person = Person::getVisibleById($person_id);
 
@@ -252,8 +282,8 @@ function taskAssignToPerson()
                 'task'  => $task_id,
                 'project'=>$project->id
             ));
-            $new_assignment->insert();            
-        }        
+            $new_assignment->insert();
+        }
         return;
     }
 
@@ -267,7 +297,7 @@ function _renderComments($task)
 {
     global $PH;
     global $auth;
-    
+
     require_once(confGet('DIR_STREBER') . "db/db_itemchange.inc.php");
 
     $comments = $task->getComments(array('order_by'=>'created'  ));
@@ -275,26 +305,26 @@ function _renderComments($task)
     echo "<h3>";
     echo __("Discussion");
     echo "</h3>";
-                
-    foreach($comments as $c) {                        
+
+    foreach($comments as $c) {
         $is_comment_editable= ($auth->cur_user->user_rights & RIGHT_EDITALL) || ($c->created_by == $auth->cur_user->id);
 
         if(! $creator= Person::getVisibleById($c->created_by) ) {
             continue;
         }
-                    
+
         echo "<div class='post_list_entry'>";
         echo "<h4>";
         echo "<span class='author'>";
         if($c->created_by == $auth->cur_user->id) {
             echo $creator->nickname;
-        } 
+        }
         else {
             echo $creator->getLink();
         }
         echo "</span>";
         echo ", ";
-        
+
         $newOrChanged = $c->isChangedForUser();
         $versions= ItemVersion::getFromItem($c);
         $hasBeenEdited = count($versions) > 1;
@@ -308,30 +338,30 @@ function _renderComments($task)
 
         if(!$hasBeenEdited) {
             echo "<span class='$newClass'>";
-            echo renderTimeAgo($c->created); 
+            echo renderTimeAgo($c->created);
             echo "</span>";
         }
         else {
-            echo renderTimeAgo($c->created); 
-            
-            echo "<span class='additional'> (" . $PH->getLink('itemViewDiff', 
-                __("editted"), 
+            echo renderTimeAgo($c->created);
+
+            echo "<span class='additional'> (" . $PH->getLink('itemViewDiff',
+                __("editted"),
                 array('item' => $c->id)
-            ); 
+            );
             echo " <span class='$newClass'>". renderTimeAgo($c->modified) . "</span>";
-            echo ") ";    
+            echo ") ";
             echo "</span>";
         }
 
-        
+
         if($c->pub_level != PUB_LEVEL_OPEN)
         {
             echo ' - '. sprintf(__("visible as %s"), renderPubLevelName($c->pub_level));
 
             ### publish ###
-            if( 
+            if(
                 ($parent_task= Task::getEditableById($c->task))
-                && ($c->pub_level < PUB_LEVEL_OPEN) 
+                && ($c->pub_level < PUB_LEVEL_OPEN)
             ) {
                 echo " - " .  $PH->getLink('itemsSetPubLevel', __('Publish'), array( 'item'=>$c->id, 'item_pub_level'=>PUB_LEVEL_OPEN));
             }
@@ -343,26 +373,26 @@ function _renderComments($task)
         }
         //echo "</p>";
         echo "</h4>";
-        
+
         if($is_comment_editable) {
             echo wikifieldAsHtml($c, 'description');
         }
         else {
             echo wikifieldAsHtml($c, 'description', array('editable'=>false));
         }
-    
+
         echo "</div>";
         $c->nowViewedByUser();
-    }   
+    }
 
     echo "<div class='new-comment'>";
     if($task->isEditable()){
-        echo "<textarea placeholder='Add comment'></textarea>";        
+        echo "<textarea placeholder='Add comment'></textarea>";
     }
     echo "<button>" . __("Add Comment").  "</button>";
     echo "</div>";
-        
-        
+
+
     echo "</div>";
 }
 
@@ -374,11 +404,11 @@ function _renderComments($task)
 *        go: 'taskAjaxCreateNewTask',
 *        task_id: -,
 *        order_id: -,
-*        project_id: 
+*        project_id:
 *        milestone_id: - ,
 *       });
 */
-function taskAjaxCreateNewTask() 
+function taskAjaxCreateNewTask()
 {
     require_once(confGet('DIR_STREBER') . "pages/project_view_tasks_in_groups.inc.php");
 
@@ -394,7 +424,7 @@ function taskAjaxCreateNewTask()
         print json_encode(array("error" => "Failed to create new task"));
         return;
     }
-    print buildListEntryForTask($new_task);    
+    print buildListEntryForTask($new_task);
     return true;
 }
 
@@ -407,8 +437,8 @@ function taskBuildListEntryResponse()
         return;
     }
 
-    print buildListEntryForTask($task);    
-    return true;   
+    print buildListEntryForTask($task);
+    return true;
 }
 
 
@@ -421,7 +451,7 @@ function taskBuildListEntryResponse()
 *        text: ,
 *       });
 */
-function taskAddComment() 
+function taskAddComment()
 {
     require_once(confGet('DIR_STREBER') . 'db/class_comment.inc.php');
 
@@ -435,7 +465,7 @@ function taskAddComment()
         echo json_encode(array('error' => "Text cannot be empty"));
         return;
     }
-    
+
     $new_comment= new Comment(array(
         'id'=>0,
         'name'=>'',
@@ -465,7 +495,7 @@ function taskAddComment()
 * true on success / error-message on failure
 * Returns
 */
-function taskSetOrderId() 
+function taskSetOrderId()
 {
     $milestone_id   = intval(get('milestone_id'));
     $task_id        = intval(get('task_id'));
@@ -475,9 +505,9 @@ function taskSetOrderId()
         echo json_encode( array( 'error' => "Task Id missing" ));
         return false;
     }
-    
+
     if(!$task = Task::getVisibleById($task_id)) {
-        echo json_encode(array( 'error' => "Task inaccessible" ));    
+        echo json_encode(array( 'error' => "Task inaccessible" ));
         return false;
     }
 
@@ -487,7 +517,7 @@ function taskSetOrderId()
         'order_by'      => 'order_id',
         'category_in' => array(TCATEGORY_TASK, TCATEGORY_BUG),
         'status_min'=> 0,
-        'status_max'=> 5,        
+        'status_max'=> 5,
     ));
 
     $index=0;
@@ -497,16 +527,16 @@ function taskSetOrderId()
         if( $index == $order_id)
         {
             $new_task_order_id= $order_id;
-            $index++;             
+            $index++;
         }
 
         if( $task_entry->id == $task->id) {
             continue;
         }
-        
-        $task_entry->order_id = $index;            
+
+        $task_entry->order_id = $index;
         $task_entry->update(array('order_id'), false);
-        $index++;             
+        $index++;
     }
 
     if($new_task_order_id != -1 || $index == $order_id) {
@@ -515,8 +545,8 @@ function taskSetOrderId()
         $task->update(array('order_id','for_milestone'), false);
     }
 
-    
-    echo json_encode(array('succes'=> "updated $index elements"));    
+
+    echo json_encode(array('succes'=> "updated $index elements"));
     return true;
 }
 

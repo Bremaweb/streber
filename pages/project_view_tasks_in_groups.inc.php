@@ -127,7 +127,7 @@ function projViewTasks()
         'order_by'=>'order_id',
     ));
 
-    renderTaskGroup($tasks, "Without Group", 0, $project->id, false);
+    renderTaskGroup($tasks, "No Milestone", 0, $project->id, false);
 
 
     #--- for milestones -------------------------------------
@@ -183,13 +183,13 @@ function renderTaskGroup($tasks, $title, $milestone_id, $project_id, $view_colla
     $collapsedClass = $view_collapsed? "collapsed":'';
 
     echo "</h2>";
-    echo "<ol class='sortable $collapsedClass'>";
-    foreach($tasks as $task ) {
-        echo buildListEntryForTask($task);
-    }
+    echo "<ol id='milestone-" . $milestone_id . "' class='sortable $collapsedClass'>";
     echo "<li class='new-task-link'>";
     echo "<a class='new-task'>".__("Add new") . "</a>";
     echo "</li>";
+    foreach($tasks as $task ) {
+        echo buildListEntryForTask($task);
+    }
     echo "</ol>";
 
     echo "</div>";

@@ -121,6 +121,10 @@ function updateDetailsContainer(str)
       }, function(str) {
          updateListItemForTask(task_id);
       });
+      if ( field_name == "for_milestone" ){
+    	  $("#milestone-" + $(this).val()).append( $("#task-" + task_id) );
+    	  $("#task-" + task_id).scrollintoview( { duration: 200 } );
+      }
    });
 
    // Initialize comment form
