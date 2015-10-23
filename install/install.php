@@ -756,50 +756,54 @@ function upgrade($args=NULL)
     ### rewrite setting-file ###
     {
     	$filename = "../" . confGet("DIR_SETTINGS") . confGet("SITE_SETTINGS");
-    	print_testStart("writing configuration file '" . $filename . "'...");
-    	$write_ok= writeSettingsFile($filename, $settings = array(
-    		"APP_NAME"	          => $g_form_fields["site_name"]["value"],
-    		"EMAIL_ADMINISTRATOR" => $g_form_fields["site_email"]["value"],
-    		'APP_TITLE_HEADER'    => $g_form_fields["site_name"]["value"] . "<span class=extend>PM</span>",
-    	));
+    	if ( !file_exists($filename) ){
+	    	print_testStart("writing configuration file '" . $filename . "'...");
+	    	$write_ok= writeSettingsFile($filename, $settings = array(
+	    		"APP_NAME"	          => $g_form_fields["site_name"]["value"],
+	    		"EMAIL_ADMINISTRATOR" => $g_form_fields["site_email"]["value"],
+	    		'APP_TITLE_HEADER'    => $g_form_fields["site_name"]["value"] . "<span class=extend>PM</span>",
+	    	));
 
-		if(!$write_ok)
-		{
-            print_testResult(RESULT_FAILED, "can not write '" . $filename . "'.");
-            /**
-            * note: because settings-file is now written by a function, we no longer
-            * have content to display when creation fails
-            */
-            # Please create it with this content:<br><pre>&lt;?php".$buffer."?&gt;</pre>");
-            return false;
-        }
-        else {
-            print_testResult(RESULT_GOOD);
-        }
+			if(!$write_ok)
+			{
+	            print_testResult(RESULT_FAILED, "can not write '" . $filename . "'.");
+	            /**
+	            * note: because settings-file is now written by a function, we no longer
+	            * have content to display when creation fails
+	            */
+	            # Please create it with this content:<br><pre>&lt;?php".$buffer."?&gt;</pre>");
+	            return false;
+	        }
+	        else {
+	            print_testResult(RESULT_GOOD);
+	        }
+    	}
 
         $filename='../'. confGet('DIR_SETTINGS').  confGet('FILE_DB_SETTINGS');
-        print_testStart("writing configuration file '$filename'...");
-        $write_ok= writeSettingsFile($filename, array(
-            'DB_TYPE'       => $db_type,
-            'HOSTNAME'      => $hostname,
-            'DB_USERNAME'   => $db_username,
-            'DB_PASSWORD'   => $db_password,
-            'DB_TABLE_PREFIX'=> $db_table_prefix,
-            'DB_NAME'       => $db_name,
-            'DB_VERSION'    => confGet('STREBER_VERSION'),
-        ));
+        if ( !file_exists($filename) ){
+	        print_testStart("writing configuration file '$filename'...");
+	        $write_ok= writeSettingsFile($filename, array(
+	            'DB_TYPE'       => $db_type,
+	            'HOSTNAME'      => $hostname,
+	            'DB_USERNAME'   => $db_username,
+	            'DB_PASSWORD'   => $db_password,
+	            'DB_TABLE_PREFIX'=> $db_table_prefix,
+	            'DB_NAME'       => $db_name,
+	            'DB_VERSION'    => confGet('STREBER_VERSION'),
+	        ));
 
-        if(!$write_ok) {
-            print_testResult(RESULT_FAILED,"can not write '$filename'.");
-            /**
-            * note: because settings-file is now written by a function, we no longer
-            * have content to display when creation fails
-            */
-            # Please create it with this content:<br><pre>&lt;?php".$buffer."?&gt;</pre>");
-            return false;
-        }
-        else {
-            print_testResult(RESULT_GOOD);
+	        if(!$write_ok) {
+	            print_testResult(RESULT_FAILED,"can not write '$filename'.");
+	            /**
+	            * note: because settings-file is now written by a function, we no longer
+	            * have content to display when creation fails
+	            */
+	            # Please create it with this content:<br><pre>&lt;?php".$buffer."?&gt;</pre>");
+	            return false;
+	        }
+	        else {
+	            print_testResult(RESULT_GOOD);
+	        }
         }
     }
     return true;
