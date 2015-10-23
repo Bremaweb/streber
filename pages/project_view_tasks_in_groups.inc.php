@@ -185,7 +185,7 @@ function renderTaskGroup($tasks, $title, $milestone_id, $project_id, $view_colla
     echo "</h2>";
     echo "<ol id='milestone-" . $milestone_id . "' class='sortable $collapsedClass'>";
     echo "<li class='new-task-link'>";
-    echo "<a class='new-task'>".__("Add new") . "</a>";
+    echo "<a href='javascript:void(0)' class='new-task'>".__("Add new") . "</a>";
     echo "</li>";
     foreach($tasks as $task ) {
         echo buildListEntryForTask($task);

@@ -226,7 +226,7 @@ function NewTaskLine(dom_element)
                      <button>Add</button>\
                   </li>"); 
 
-      _self.ol.append(_self.newTaskLine); // We have to append before setting focus...
+      _self.ol.prepend(_self.newTaskLine); // We have to append before setting focus...
       
       _self.newTaskLine
          .find('input')
