@@ -59,7 +59,7 @@ $g_config= array(
     *
     * - additionally the current db-version is set by DB_VERSION in _settings/db_settings.inc
     */
-    'DB_CREATE_DUMP_VERSION'     => '0.095',     # sql-dump loaded from /_install/-directory at installation
+    'DB_CREATE_DUMP_VERSION'     => '0.0972',     # sql-dump loaded from /_install/-directory at installation
 
     /**
     * url to online-help
